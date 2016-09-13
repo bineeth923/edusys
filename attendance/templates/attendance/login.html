@@ -1,0 +1,13 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        {% if error_message %} {{ error_message }} {% endif %}
+        <form action="{% url 'login_validate' %}" method="post">
+        {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Login">
+        </form>
+    </body>
+</html>
