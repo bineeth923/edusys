@@ -13,3 +13,13 @@ class ClassForm(forms.ModelForm):
     class Meta:
         model = Class
         fields = ['grade', 'division', 'teacher']
+
+
+class UserAddForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'email']
+
+
+class TeacherRemoveForm(forms.Form):
+    teacher = forms.ModelChoiceField(queryset=User.objects.all().filter(groups__name='Teacher'))

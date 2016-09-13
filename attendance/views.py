@@ -1,13 +1,13 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse
 
-from attendance.forms import LoginForm, ClassForm
+from attendance.forms import LoginForm, ClassForm, UserAddForm, TeacherRemoveForm
 from attendance.models import Class
 from helper import *
 
@@ -66,7 +66,7 @@ def admin_index(request):
 @admin_login_required
 def admin_teacher_add(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserAddForm(request.POST)
         if form.is_valid():
             try:
                 user = form.save()
@@ -79,9 +79,29 @@ def admin_teacher_add(request):
             return HttpResponseRedirect(reverse('admin_teacher_add') + "?status=error")
     else:
         context = get_error_context(request)
-        form = UserCreationForm()
+        form = UserAddForm()
         context['form'] = form
         return render(request, 'attendance/admin_teacher_add.html', context)
+
+
+@admin_login_required
+def admin_teacher_remove(request):
+    if request.method == 'POST':
+        form = TeacherRemoveForm(request.POST)
+        if form.is_valid():
+            try:
+                user = form.cleaned_data['teacher']
+                user.delete()
+            except:
+                return HttpResponseRedirect(reverse('admin_teacher_delete') + "?status=error")
+            return HttpResponseRedirect(reverse('admin_teacher_delete') + "?status=success")
+        else:
+            return HttpResponseRedirect(reverse('admin_teacher_delete') + "?status=error")
+    else:
+        context = get_error_context(request)
+        form = TeacherRemoveForm()
+        context['form'] = form
+        return render(request, 'attendance/admin_teacher_delete.html', context)
 
 
 @admin_login_required
