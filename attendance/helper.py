@@ -79,3 +79,12 @@ def principal_login_required(function):
         return function(request)
 
     return wrapper
+
+
+def student_login_required(function):
+    def wrapper(request):
+        if not is_student(request.user):
+            return render(request, 'attendance/unauthorised.html')
+        return function(request)
+
+    return wrapper

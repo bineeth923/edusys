@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group, User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -10,7 +9,7 @@ from django.urls import reverse
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
-from attendance.models import Class, Teacher, Student
+from attendance.models import Class, Teacher, Student, Subject
 from helper import *
 
 
@@ -212,3 +211,127 @@ def teacher_remove_student(request):
         form = get_StudentRemoveForm(query_set, None)
         context['form'] = form
         return render(request, 'attendance/teacher_student_delete.html', context)
+
+
+@teacher_login_required
+def teacher_test_add(request):  # TODO
+    if request.method == "POST":
+        ''' TASKs
+            check if the object exists
+             if no =>   after creating the Test object,
+                        create Mark object for all students of the class
+             if yes => Display a filled version of previous form to be edited
+
+        '''
+        # Do something
+    else:
+        '''Description of form required:
+        * Test Name
+        * Marks out of
+        * Date
+        * Radio button/tab
+            > Select existing subject
+            > New Subject
+                => Subject name
+                => Select Teacher (can't add new teachers)
+        '''
+        teacher_list = Teacher.objects.all()
+        subject_list = Subject.objects.all()
+
+
+@teacher_login_required
+def teacher_report_view_single(request):
+    if request.method == "POST":
+        '''Task
+        * Get subject list from form
+        * Get student from form
+        * Get range of date
+        return web page with required content
+        '''
+    else:
+        '''Form Description
+        * Student name
+        * Subject List containing all subjects of that class
+        * From date
+        * To date
+        '''
+
+
+@teacher_login_required
+def teacher_report_class(request):
+    if request.method == "POST":
+        '''Task
+        * Get Subject List
+        * Get From and To Date
+        return table with the data
+        '''
+    else:
+        '''Form
+        * Subject List
+        * From Date
+        * To Date
+        '''
+
+
+@teacher_login_required
+def teacher_attendance_today(request):
+    if request.method == "POST":
+        '''Task
+        Create attendance objects for each student
+        and fill with data from form
+        '''
+        # return redirect
+    else:
+        ''' Task
+        Check if attendance for today already taken,
+            if taken => Show edit attendance option and today's statistics
+        else show the form :
+        Form
+        for each student in class
+        * Student name as label, checkbox to determine present or not
+        '''
+        teacher = Teacher.objects.get(user=request.user)
+        student_list = Student.objects.filter(which_class=teacher.which_class)
+        # Return the web page
+
+
+@teacher_login_required
+def teacher_attendance_report_single(request):
+    if request.method == "POST":
+        '''Task
+        Get the following data:
+        * Student name
+        * Date range -> From date and To date
+        return The attendance details of the student
+        '''
+    else:
+        '''Form
+        * Student
+        * From date
+        * To date
+        '''
+
+
+@teacher_login_required
+def teacher_attendance_report_class(request):
+    if request.method == "POST":
+        '''Task
+        * Get Range of date
+        return attendance register
+        '''
+    else:
+        '''Form
+        * Range of date
+        '''
+
+########################################################################################################################
+#                                               Student Controller                                                     #
+########################################################################################################################
+
+'''
+Views :
+* Index - > show average attendence , average marks per subject, over all average marks, link to other views
+* Check attendance at date -> form
+* Check Test result
+* Check Subject Tests
+'''
