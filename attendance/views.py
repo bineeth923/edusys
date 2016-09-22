@@ -11,7 +11,7 @@ from django.urls import reverse
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
 from attendance.models import Class, Teacher, Student
-from helper import *
+from attendance.helper import *
 
 
 class UserIntegretyFailException(Exception):
