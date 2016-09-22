@@ -37,7 +37,7 @@ View helper function to generate a context for the template in case error messag
 
 
 def get_error_context(request):
-    try:
+    try: # TODO set appropriate error codes
         error = request.GET['status']
         context = {'error_message': 'Something went wrong'}
     except KeyError:

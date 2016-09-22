@@ -280,6 +280,7 @@ def teacher_attendance_today(request):
         Create attendance objects for each student
         and fill with data from form
         '''
+
         # return redirect
     else:
         ''' Task
