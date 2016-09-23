@@ -37,7 +37,7 @@ View helper function to generate a context for the template in case error messag
 
 
 def get_error_context(request):
-    try: # TODO set appropriate error codes
+    try:  # TODO set appropriate error codes
         error = request.GET['status']
         context = {'error_message': 'Something went wrong'}
     except KeyError:
@@ -88,3 +88,18 @@ def student_login_required(function):
         return function(request)
 
     return wrapper
+
+
+####################################################
+#           Report Generators                      #
+####################################################
+
+
+def mark_report(student):
+    # generate marks report for student TODO
+    pass
+
+
+def attendance_report(student, from_date, to_date):
+    # generate attendance report for student TODO
+    pass

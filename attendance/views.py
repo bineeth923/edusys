@@ -6,10 +6,11 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse
+from django.utils import timezone
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
-from attendance.models import Class, Teacher, Student, Subject
+from attendance.models import Class, Teacher, Student, Subject, Attendance
 from helper import *
 
 
@@ -168,6 +169,7 @@ def teacher_add_student(request):
                 student = Student()
                 student.set_user(user)
                 student.phone = form.cleaned_data['phone']
+                student.roll_no = form.cleaned_data['roll']
                 student.which_class = Class.objects.get(teacher__user=request.user)
                 student.save()
             except IntegrityError:
@@ -275,29 +277,40 @@ def teacher_report_class(request):
 
 @teacher_login_required
 def teacher_attendance_today(request):
+    teacher = Teacher.objects.get(user=request.user)
+    student_list = Student.objects.filter(which_class=teacher.which_class)
     if request.method == "POST":
         '''Task
         Create attendance objects for each student
         and fill with data from form
         '''
-
+        for student in student_list:
+            string = 'student_' + student.roll_no
+            is_present = request.POST[string]
+            attendance = Attendance(student=student)
+            attendance.is_present = is_present
+            attendance.which_class = teacher.which_class
+            attendance.date = timezone.now().date()
+            attendance.save()
         # return redirect
+        return HttpResponseRedirect(reverse('teacher_index'))
     else:
         ''' Task
         Check if attendance for today already taken,
-            if taken => Show edit attendance option and today's statistics
+            if taken => Show pre-filled attendance option and today's statistics
         else show the form :
         Form
         for each student in class
         * Student name as label, checkbox to determine present or not
         '''
-        teacher = Teacher.objects.get(user=request.user)
-        student_list = Student.objects.filter(which_class=teacher.which_class)
-        # Return the web page
+        attendance = Attendance.objects.filter(which_class__teacher=teacher).filter(date=timezone.now().date())
+        # TODO Return the web page
+        # attendance, student_list
 
 
 @teacher_login_required
 def teacher_attendance_report_single(request):
+    student_list = Student.objects.filter(which_class__teacher__user=request.user)
     if request.method == "POST":
         '''Task
         Get the following data:
@@ -305,12 +318,17 @@ def teacher_attendance_report_single(request):
         * Date range -> From date and To date
         return The attendance details of the student
         '''
+        student_roll = request.POST['student_roll']
+        student = student_list.get(roll_no=student_roll)
+        report = attendance_report(student, request.POST['from'], request.POST['to'])
+        # TODO return report, student, from_date, to_date to template
     else:
         '''Form
         * Student
         * From date
         * To date
         '''
+        # TODO return student_list
 
 
 @teacher_login_required
@@ -324,6 +342,7 @@ def teacher_attendance_report_class(request):
         '''Form
         * Range of date
         '''
+
 
 ########################################################################################################################
 #                                               Student Controller                                                     #
