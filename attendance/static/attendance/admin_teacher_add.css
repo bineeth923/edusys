@@ -1,0 +1,15 @@
+.container{
+    position: absolute;
+}
+
+.container h2{
+    position: relative;
+    text-align: center;
+}
+
+@media (max-width: 750px) {
+    .container{
+        position: relative;
+        text-align: left;
+    }
+}
