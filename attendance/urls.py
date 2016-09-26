@@ -26,7 +26,7 @@ urlpatterns = [
         # TODO Test add
         # TODO test edit
         # TODO test remove
-    # TODO Take Attendance  < almost
+    url(r'teacher/attendance', views.teacher_attendance_today, name="teacher_attendance")
     # TODO attendance
         # TODO edit attendace
         # TODO remove attendance

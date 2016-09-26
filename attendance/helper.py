@@ -18,7 +18,7 @@ These functions are to check is a giving User is of which type
 
 
 def is_teacher(user):
-    return user.groups.filter(name='Teacher').exists()
+        return user.groups.filter(name='Teacher').exists()
 
 
 def is_student(user):
