@@ -21,5 +21,19 @@ urlpatterns = [
     url(r'^teacher/$', views.teacher_index, name="teacher_index"),
     url(r'^teacher/student/add', views.teacher_add_student, name="teacher_student_add"),
     url(r'^teacher/student/remove', views.teacher_remove_student, name="teacher_student_remove"),
+    # TODO student edit
+    # TODO test
+        # TODO Test add
+        # TODO test edit
+        # TODO test remove
+    url(r'teacher/attendance', views.teacher_attendance_today, name="teacher_attendance")
+    # TODO attendance
+        # TODO edit attendace
+        # TODO remove attendance
+    # TODO report
+        # TODO Individual
+        # TODO Class
+    ################### Student #########################################
+
 
 ]

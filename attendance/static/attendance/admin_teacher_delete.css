@@ -1,0 +1,43 @@
+label{
+    margin-left: 1em;
+    font-size: 2em;
+    float: left;
+    font-weight: 500;
+}
+.dropdown{
+    margin-top: 8px;
+    float: left;
+    margin-left: 4px;
+}
+#remove {
+    margin-top: 4px;
+    margin-left: 14px;
+    transition-duration: 0.4s;
+}
+
+
+form{
+    margin-top: 10vh;
+
+}
+@media(max-width: 756px){
+
+    .dropdown{
+        text-align: center;
+        float: none;
+    }
+    #remove{
+        width: 95%;
+        margin-top: 20vh;
+        font-size: 1.5em;
+        height:2em;
+    }
+    label{
+        float: none;
+        margin-left: 0.2em;
+        text-align: center;
+    }
+    form{
+        text-align: center;
+    }
+}

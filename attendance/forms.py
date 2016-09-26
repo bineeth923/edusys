@@ -22,7 +22,7 @@ class UserAddForm(forms.Form):
 
 
 class TeacherAddForm(UserAddForm):
-    which_class = forms.ModelChoiceField(queryset=Class.objects.all())
+    which_class = forms.ModelChoiceField(queryset=Class.objects.filter(teacher__isnull=True))
 
 
 class TeacherRemoveForm(forms.Form):
@@ -30,6 +30,7 @@ class TeacherRemoveForm(forms.Form):
 
 
 class StudentAddForm(UserAddForm):
+    roll = forms.IntegerField()
     phone = forms.IntegerField(max_value=9999999999)
 
 

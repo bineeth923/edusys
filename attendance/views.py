@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group, User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -7,14 +6,19 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse
+from django.utils import timezone
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
-from attendance.models import Class, Teacher, Student
-from helper import *
+from attendance.models import Class, Teacher, Student, Subject, Attendance
+from attendance.helper import *
 
 
 class UserIntegretyFailException(Exception):
+    pass
+
+
+class RollNoExistsError(Exception):
     pass
 
 
@@ -169,6 +173,12 @@ def teacher_add_student(request):
                 student = Student()
                 student.set_user(user)
                 student.phone = form.cleaned_data['phone']
+                rol_list = [student.roll_no for student in
+                            Student.objects.filter(which_class__teacher__user=request.user)]
+                roll = form.cleaned_data['roll']
+                if roll in rol_list:
+                    raise RollNoExistsError
+                student.roll_no = form.cleaned_data['roll']
                 student.which_class = Class.objects.get(teacher__user=request.user)
                 student.save()
             except IntegrityError:
@@ -179,6 +189,8 @@ def teacher_add_student(request):
                 student = Student.objects.get(user=user)
                 student.phone = form.cleaned_data['phone']
                 student.save()
+            except RollNoExistsError:
+                return HttpResponseRedirect(reverse('teacher_student_add') + "?status=rollerror")
             return HttpResponseRedirect(reverse('teacher_student_add') + "?status=success")
         else:
             return HttpResponseRedirect(reverse('teacher_student_add') + "?status=error")
@@ -212,3 +224,216 @@ def teacher_remove_student(request):
         form = get_StudentRemoveForm(query_set, None)
         context['form'] = form
         return render(request, 'attendance/teacher_student_delete.html', context)
+
+
+@teacher_login_required
+def teacher_test_add(request):  # TODO
+    student_list = Student.objects.filter(which_class__teacher__user=request.user)
+    if request.method == "POST":
+        ''' TASKs
+            check if the object exists
+             if no =>   after creating the Test object,
+                        create Mark object for all students of the class
+             if yes => Display a filled version of previous form to be edited
+
+        '''
+        # Do something
+        try:
+            if 'new_subject' in request.POST:
+                subject_name = request.POST['new_subject']
+                teacher = int(request.POST['new_teacher'])
+                subject = Subject(name=subject_name)
+                subject.teacher = Teacher.objects.get(pk=teacher)
+                subject.which_class = Teacher.objects.get(user=request.user).which_class
+                subject.save()
+            else:
+                subject = Subject.objects.get(pk=int(request.POST['subject']))
+            test = Test()
+            test.subject = subject
+            test.date = request.POST['date']
+            test.name = request.POST['test_name']
+            test.total_marks = int(request.POST['marks_tot'])
+            test.save()
+            for student in student_list:
+                string = 'mark_' + student.roll_no
+                marks = request.POST[string]
+                mark = Marks()
+                mark.student = student
+                mark.test = test
+                mark.marks = int(mark)
+                mark.save()
+                # return HttpResponseRedirect(reverse(<name>)+'?status=success)
+        '''
+        except KeyError:
+            pass
+        except IntegrityError:
+            pass
+        except TypeError:
+            pass
+        '''
+
+    else:
+        '''Description of form required:
+        * Test Name (test_name)
+        * Marks out of (marks_tot)
+        * Date (date)
+        * Radio button/tab
+            > Select existing subject (subject)
+            > New Subject
+                => Subject name (new_subject)
+                => Select Teacher (can't add new teachers) (new_teacher)
+        * for List of students
+            > TextBox (marks_<student_roll>)
+        '''
+        teacher_list = Teacher.objects.all()
+        subject_list = Subject.objects.filter(which_class__teacher__user=request.user)
+        context = get_error_context(request)
+        context['teacher_list'] = teacher_list
+        context['subject_list'] = subject_list
+        # TODO return(request,<template>,context)
+
+
+@teacher_login_required
+def teacher_test_edit(request):
+    context = {}
+    if request.method == "POST":
+        test_id = request.POST['test']
+
+
+
+@teacher_login_required
+def teacher_report_view_single(request):
+    if request.method == "POST":
+        '''Task
+        * Get subject list from form
+        * Get student from form
+        * Get range of date
+        return web page with required content
+        '''
+    else:
+        '''Form Description
+        * Student name
+        * Subject List containing all subjects of that class
+        * From date
+        * To date
+        '''
+
+
+@teacher_login_required
+def teacher_report_class(request):
+    if request.method == "POST":
+        '''Task
+        * Get Subject List
+        * Get From and To Date
+        return table with the data
+        '''
+    else:
+        '''Form
+        * Subject List
+        * From Date
+        * To Date
+        '''
+
+
+@teacher_login_required
+def teacher_attendance_today(request):
+    teacher = Teacher.objects.get(user=request.user)
+    student_list = Student.objects.filter(which_class=teacher.which_class)
+    if request.method == "POST":
+        '''Task
+        Create attendance objects for each student
+        and fill with data from form
+        '''
+        for student in student_list:
+            string = 'student_' + student.roll_no
+            is_present = request.POST[string]
+            attendance = Attendance(student=student)
+            attendance.is_present = is_present
+            attendance.which_class = teacher.which_class
+            attendance.date = timezone.now().date()
+            attendance.save()
+        # return redirect
+        return HttpResponseRedirect(reverse('teacher_index'))
+    else:
+        ''' Task
+        Check if attendance for today already taken,
+            if taken => Show pre-filled attendance option and today's statistics
+        else show the form :
+        Form
+        for each student in class
+        * Student name as label, checkbox to determine present or not
+        '''
+        attendance = Attendance.objects.filter(which_class__teacher=teacher).filter(
+                date=timezone.now().date()).order_by('student__roll_no')
+        context = get_error_context(request)
+        if attendance.count() != 0:
+            present = 0
+            absent = 0
+            percentage = 0
+            for a in attendance:
+                if a.is_present:
+                    present += 1
+                else:
+                    absent += 1
+            percentage = float(present) / attendance.count() * 100
+            context['absent'] = absent
+            context['present'] = present
+            context['percentage'] = percentage
+            context['total'] = attendance.count()
+            # TODO return render(request, <template>, context)
+        context['student_list'] = student_list
+        # TODO return render(request,<template>, context)
+        # attendance, student_list
+
+
+################# Unwanted #############################################################
+
+@teacher_login_required
+def teacher_attendance_report_single(request):
+    student_list = Student.objects.filter(which_class__teacher__user=request.user)
+    if request.method == "POST":
+        '''Task
+        Get the following data:
+        * Student name
+        * Date range -> From date and To date
+        return The attendance details of the student
+        '''
+        student_roll = request.POST['student_roll']
+        student = student_list.get(roll_no=student_roll)
+        report = attendance_report(student, request.POST['from'], request.POST['to'])
+        # TODO return report, student, from_date, to_date to template
+    else:
+        '''Form
+        * Student
+        * From date
+        * To date
+        '''
+        # TODO return student_list
+
+
+@teacher_login_required
+def teacher_attendance_report_class(request):
+    if request.method == "POST":
+        '''Task
+        * Get Range of date
+        return attendance register
+        '''
+    else:
+        '''Form
+        * Range of date
+        '''
+
+
+##########################################################################################
+
+########################################################################################################################
+#                                               Student Controller                                                     #
+########################################################################################################################
+
+'''
+Views :
+* Index - > show average attendence , average marks per subject, over all average marks, link to other views
+* Check attendance at date -> form
+* Check Test result
+* Check Subject Tests
+'''
