@@ -353,10 +353,24 @@ def teacher_attendance_today(request):
         * Student name as label, checkbox to determine present or not
         '''
         attendance = Attendance.objects.filter(which_class__teacher=teacher).filter(
-            date=timezone.now().date()).order_by('student__roll_no')
+                date=timezone.now().date()).order_by('student__roll_no')
         context = get_error_context(request)
+        if attendance.count() != 0:
+            present = 0
+            absent = 0
+            percentage = 0
+            for a in attendance:
+                if a.is_present:
+                    present += 1
+                else:
+                    absent += 1
+            percentage = float(present)/attendance.count() * 100
+            context['absent'] = absent
+            context['present'] = present
+            context['percentage'] = percentage
+            context['total'] = attendance.count()
+            # TODO return render(request, <template>, context)
         context['student_list'] = student_list
-        context['attendance'] = attendance
         # TODO return render(request,<template>, context)
         # attendance, student_list
 
