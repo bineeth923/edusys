@@ -371,7 +371,7 @@ def teacher_attendance_today(request):
             context['total'] = attendance.count()
             # TODO return render(request, <template>, context)
         context['student_list'] = student_list
-        # TODO return render(request,<template>, context)
+        return render(request,'attendance/teacher_attendance.html', context)
         # attendance, student_list
 
 

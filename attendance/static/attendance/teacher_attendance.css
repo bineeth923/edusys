@@ -1,0 +1,61 @@
+#attendance_main{
+    margin-top : 3em;
+    display: table;
+}
+h2{
+    text-align: center;
+}
+.student_name{
+    float: left;
+}
+.student_check, .student_name{
+    text-align: center;
+    display: table-cell;
+    margin-left : 12em;
+    margin-bottom: 2px;
+}
+.student_name{
+    width:20em;
+    font-size: 1.5em;
+}
+input[type="checkbox"]{
+cursor: pointer;
+-webkit-appearance: none;
+background: #34495E;
+position: relative;
+box-sizing: content-box ;
+width: 20px;
+height: 20px;
+border-width: 0;
+border-radius: 25%;
+transition: all .3s linear;
+}
+input[type="checkbox"]:checked{
+  background-color: #2ECC71;
+}
+input[type="checkbox"]:focus{
+  outline: 0 none;
+  box-shadow: none;
+}
+.btn-default{
+    margin-left: 30em;
+    margin-top: 2em;
+    width : 40%
+}
+
+@media (max-width: 800px) {
+    .student_check, .student_name{
+        margin-left: 5%;
+    }
+    .student_name{
+        width : 12em;
+    }
+    input[type="checkbox"]{
+        width : 35px;
+    }
+    .btn-default{
+        width:100%;
+        margin-left: 0;
+    }
+}
+
