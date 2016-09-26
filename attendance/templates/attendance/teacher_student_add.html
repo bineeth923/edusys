@@ -39,6 +39,7 @@
             <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
                 <img src="{% static "attendance/img/logo.gif" %}">
                 <ul class="nav navbar-nav">
+                    <li ><a href="#">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li class="" ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_remove' %}">Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                 </ul>
@@ -55,13 +56,13 @@
     <div class="form-group">
         <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Username:</label>
       <div class="col-sm-7">
-        <input type="text" class="form-control" id="id_username" maxlength="50"  name="username"placeholder="Enter username">
+        <input type="text" class="form-control" id="id_username" maxlength="50"  name="username"placeholder="Enter username" required autofocus>
       </div>
     </div>
     <div class="form-group">
       <label class="control-label col-sm-offset-3 col-sm-2" for="id_password">Password:</label>
       <div class="col-sm-7">
-        <input type="text" class="form-control" id="id_password" maxlength="50" name="password" placeholder="Enter password">
+        <input type="text" class="form-control" id="id_password" maxlength="50" name="password" placeholder="Enter password" required autofocus>
       </div>
     </div>
 
@@ -74,7 +75,7 @@
     <div class="form-group">
       <label class="control-label col-sm-offset-3 col-sm-2" for="id_email">Phone number:</label>
       <div class="col-sm-7">
-        <input type="number" class="form-control" id="id_phone" name="phone" max="9999999999" placeholder="Enter phone number">
+        <input type="number" class="form-control" id="id_phone" name="phone" max="9999999999" placeholder="Enter phone number" required>
       </div>
     </div>
 
