@@ -52,6 +52,8 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     which_class = models.ForeignKey(Class)
     phone = models.IntegerField()
+    roll_no = models.IntegerField(unique=False)
+
     def set_user(self, user):
         self.user = user
         self.user.groups.add(Group.objects.get(name='Student'))
