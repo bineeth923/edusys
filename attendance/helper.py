@@ -98,10 +98,10 @@ def student_login_required(function):
 
 
 def mark_report_subject(student, subject):
-    '''
+    """
     Returns a list of dictionary containing the details of test and marks obtained by student for given subject
-    '''
-    # generate marks report for student TODO
+    """
+    # TODO test
     test_list = Test.objects.filter(subject=subject)
     mark_details = []
     for test in test_list:
@@ -120,10 +120,10 @@ def mark_report_subject(student, subject):
 
 
 def attendance_report(student, from_date, to_date):
-    '''
+    """
     returns a dictionary containing the details of the student's attendance in given time range
-    '''
-    # generate attendance report for student TODO
+    """
+    # TODO test
     attendance_list = Attendance.objects.filter(student=student, date__gte=from_date, date__lte=to_date)
     present = 0
     absent = 0
