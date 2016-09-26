@@ -83,7 +83,7 @@ class Subject(models.Model):
 class Test(models.Model):
     subject = models.ForeignKey(Subject)
     total_marks = models.IntegerField()
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=False)
     date = models.DateField()
 
 
