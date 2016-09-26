@@ -8,6 +8,7 @@ html {
 }
 div.navbar.navbar-inverse{
     margin-bottom: 0;
+    z-index: 999;
 }
 a.dropdown-toggle{
     margin-right: 25px;
@@ -34,7 +35,7 @@ a.dropdown-toggle{
     padding: 12px 16px;
     color: black;
     cursor: hand;
-    z-index: 990;
+    z-index: 1000;
     opacity: 0;
     transition: opacity 1s ease-out;
 
@@ -53,6 +54,8 @@ nav.sidebar,
     -moz-transition: margin 200ms ease-out;
     -o-transition: margin 200ms ease-out;
     transition: margin 200ms ease-out;
+        z-index: 899;
+
 }
 
 img{

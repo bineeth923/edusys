@@ -1,13 +1,112 @@
-<html>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+         {% load static %}
+  <title>Add Student</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static "attendance/admin_teacher_add.css" %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}" />
 
-    </head>
-    <body>
-        {% if error_message %} {{ error_message }} {% endif %}
-        <form action="{% url 'teacher_student_add' %}" method="post">
-        {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Add">
-        </form>
-    </body>
+</head>
+<body >
+<div class="navbar navbar-inverse">
+        <div class="">
+            <div class="navbar-header" role="navigation" >
+                <a class="navbar-brand" id="Brand">Shift2Cloud</a>
+            </div>
+            <div id="admin_login">
+                    <p>Welcome Teacher</p>
+                    <div id="admin_logout">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+<nav class="navbar navbar-default sidebar" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+        <span class="sr-only" >Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                <img src="{% static "attendance/img/logo.gif" %}">
+                <ul class="nav navbar-nav">
+                    <li class="" ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_student_remove' %}">Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+
+
+<div class="container">
+  <h2>Add Student</h2>
+  <form class="form-horizontal" action="{% url 'teacher_student_add' %}" method="post">
+            {% csrf_token %}
+    <div class="form-group">
+        <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Username:</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" id="id_username" maxlength="50"  name="username"placeholder="Enter username">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-offset-3 col-sm-2" for="id_password">Password:</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" id="id_password" maxlength="50" name="password" placeholder="Enter password">
+      </div>
+    </div>
+
+      <div class="form-group">
+      <label class="control-label col-sm-offset-3 col-sm-2" for="id_email">Email:</label>
+      <div class="col-sm-7">
+        <input type="email" class="form-control" id="id_email" name="email" placeholder="Enter email">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-offset-3 col-sm-2" for="id_email">Phone number:</label>
+      <div class="col-sm-7">
+        <input type="number" class="form-control" id="id_phone" name="phone" max="9999999999" placeholder="Enter phone number">
+      </div>
+    </div>
+
+   <div class="form-group">
+      <div class="col-sm-offset-4 col-sm-6">
+        <center><button type="submit" class="btn btn-default" value="Add" >Submit</button></center>
+      </div>
+
+    </div>
+  </form>
+</div>
+<div id="snackbar">{{ error_message }}</div>
+</body>
+ <script>
+   $('li > a').click(function() {
+    $(this).parent().addClass('active');
+           $('li').removeClass();
+
+});
+
+     function snackbar_fun() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar")
+
+    // Add the "show" class to DIV
+    x.className = "show";
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
+     {% if error_message %}snackbar_fun(){% endif %}
+
+</script>
 </html>
+

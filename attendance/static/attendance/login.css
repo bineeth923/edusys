@@ -74,3 +74,6 @@ body {
     height: 150px;
     margin-left: 25%;
 }
+label.checkbox{
+    margin-left:1em;
+}

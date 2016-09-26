@@ -6,23 +6,25 @@
     position: relative;
     text-align: center;
 }
+button{
+    text-align: center;
+}
 .btn-default{
-    width:95%;
-    margin-top: 20px;
-}
-#select_class select{
-    width:100%
-}
+        width:95%;
+        margin-top: 20px;
 
+    }
 @media (max-width: 750px) {
     .container{
         position: relative;
         text-align: left;
     }
-
+    .btn-default{
+    }
 
 }
-@media (min-width: 750px) {
+
+@media(min-width: 750px){
     .btn-default{
         width:40%;
     }

@@ -41,7 +41,7 @@
                 <ul class="nav navbar-nav">
                     <li class="" ><a href="{% url 'admin_teacher_add' %}">Add Teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'admin_teacher_delete' %}">Remove teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_class_add' %}">Class Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'admin_class_add' %}">Add Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="#">Remove Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                 </ul>
             </div>
@@ -76,7 +76,7 @@
 
  <div class="dropdown">
     <label class="control-label col-sm-offset-3 col-sm-2" for="id_which_class">Which Class:</label>
-  <div class="col-sm-7">
+  <div class="col-sm-7" id="select_class">
       {{ form.which_class }}
   </div>
 </div>
@@ -92,8 +92,9 @@
 </body>
  <script>
    $('li > a').click(function() {
-    $('li').removeClass();
     $(this).parent().addClass('active');
+           $('li').removeClass();
+
 });
 
      function snackbar_fun() {
