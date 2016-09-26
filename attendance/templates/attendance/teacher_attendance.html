@@ -52,7 +52,9 @@
 <!--Attendance main view-->
 <form action="{% url 'teacher_attendance' %}" method="post">
     {% csrf_token %}
-
+    <div class="col-sm-offset-2 col-sm-10">
+        {% for name in student.name %}
+    </div>
 
 </form>
 
