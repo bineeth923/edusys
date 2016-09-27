@@ -319,7 +319,7 @@ def teacher_test_add(request):  # TODO
                 mark = Marks()
                 mark.student = student
                 mark.test = test
-                mark.marks = int(mark)
+                mark.marks = int(marks)
                 mark.save()
                 # return HttpResponseRedirect(reverse(<name>)+'?status=success)
 
@@ -405,7 +405,6 @@ def teacher_attendance_today(request):
             is_present = string in request.POST
             attendance = Attendance(student=student)
             attendance.is_present = is_present
-            attendance.which_class = teacher.which_class
             attendance.date = timezone.now().date()
             attendance.save()
         # return redirect
@@ -419,7 +418,7 @@ def teacher_attendance_today(request):
         for each student in class
         * Student name as label, checkbox to determine present or not
         '''
-        attendance = Attendance.objects.filter(which_class__teacher=teacher).filter(
+        attendance = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
                 date=timezone.now().date()).order_by('student__roll_no')
         context = get_error_context(request)
         if attendance.count() != 0:
@@ -434,9 +433,9 @@ def teacher_attendance_today(request):
             percentage = float(present) / attendance.count() * 100
             context['absent'] = absent
             context['present'] = present
-            context['percentage'] = percentage
             context['total'] = attendance.count()
             percentage = "{0:.2f}".format(percentage)
+            context['percentage'] = percentage
             return render(request, 'attendance/teacher_attendance_taken.html', context)
         context['student_list'] = student_list
         return render(request,'attendance/teacher_attendance.html', context)
