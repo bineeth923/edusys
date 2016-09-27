@@ -1,4 +1,4 @@
- <head>
+<head>
      {% load static %}
      <title>Welcome Teacher</title>
      <meta charset="utf-8">
@@ -8,11 +8,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
-
 </head>
 
 
 <body>
+<!-- Main nav bar-->
 <div class="navbar navbar-inverse">
         <div class="">
             <div class="navbar-header" role="navigation" >
@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <nav class="navbar navbar-default sidebar" role="navigation">
+<nav class="navbar navbar-default sidebar" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
@@ -47,5 +47,16 @@
         </div>
 
     </nav>
+<!-- Nav bar ends -->
 
+<div class="container">
+    <h2>Todays attendance has already being taken..</h2>
+    <button class="btn btn-sucess" name="Edit_Attendance" id="id_Edit_Attendance" > Edit Attendance</button>
+    <div class="inner_container">
+        <h3>No of students present : {{ present }}</h3>
+        <h3>No of students absent : {{ absent }}</h3>
+        <h3>Total attendance count : {{ total }}</h3>
+        <h3>Percentage : {{ percentage }}</h3>
+    </div>
+</div>
 </body>
