@@ -8,6 +8,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
+    <link rel="stylesheet" href="{% static "attendance/teacher_student_edit.css" %}">
 
 </head>
 
@@ -26,7 +27,7 @@
             </div>
         </div>
     </div>
-    <nav class="navbar navbar-default sidebar" role="navigation">
+<nav class="navbar navbar-default sidebar" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
@@ -48,5 +49,38 @@
         </div>
 
     </nav>
+
+<div class="container">
+    <h2>Edit the details of the student..</h2>
+    <form action="{% url 'teacher_student_edit' %}" method="post">
+        {% csrf_token %}
+        <table class="col-sm-offset-3 col-sm-9">
+            <tr>
+                <th>SNo:</th>
+                <th>Username</th>
+                <th>Roll No</th>
+                <th>Class</th>
+                <th>Phone No</th>
+            </tr>
+            {% for student in  student_list  %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ student.user.username }}</td>
+                    <td><input type="text" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll"></td>
+                    <td>
+                        <select name="student_{{ student.id }}_class">
+                            <option value="{{ student.which_class.id }}" selected="selected" >{{ student.which_class }}</option>
+                            {% for class in class_list %}
+                                <option value="{{ class.id }}">{{ class }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input type="text" value="{{ student.phone }}" name="student_{{ student.id }}_phone"></td>
+                </tr>
+            {% endfor %}
+        </table>
+    <button type="submit" class="btn btn-default" value="Add" >Submit</button>
+    </form>
+</div>
 
 </body>
