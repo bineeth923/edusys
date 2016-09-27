@@ -279,6 +279,8 @@ def teacher_student_edit(request):
         redirect to same link
         '''
         context = get_error_context(request)
+        class_list = Class.objects.all()
+        context['class_list'] = class_list
         context['student_list'] = student_list
         #TODO return render(request, <template>, context)
 
@@ -400,7 +402,7 @@ def teacher_attendance_today(request):
         '''
         for student in student_list:
             string = 'student_' + str(student.id)
-            is_present = request.POST[string]
+            is_present = string in request.POST
             attendance = Attendance(student=student)
             attendance.is_present = is_present
             attendance.which_class = teacher.which_class
