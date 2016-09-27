@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
          {% load static %}
-  <title>Add Student</title>
+  <title>Delete Student</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -44,6 +44,8 @@
                     <li ><a href="{% url 'teacher_attendance' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li class="" ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_remove' %}">Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+
                 </ul>
             </div>
         </div>
