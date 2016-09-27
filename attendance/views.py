@@ -258,8 +258,7 @@ def teacher_student_edit(request):
             if roll not in roll_list:
                 roll_list.add(roll)
             else:
-                pass
-                # TODO return HttpResponseRedirect(reverse()+"?=status=error")
+                return HttpResponseRedirect(reverse('teacher_student_edit')+"?=status=error")
         for student in student_list:
             string = 'student_' + str(student.id) + '_'
             student.roll_no = int(request.POST[string+'roll'])
@@ -267,7 +266,7 @@ def teacher_student_edit(request):
             which_class = Class.objects.get(pk=int(request.POST[string+'class']))
             student.which_class = which_class
             student.save()
-        #TODO return HttpResponseRedirect(reverse()+"?status=success")
+        return HttpResponseRedirect(reverse('teacher_student_edit')+"?status=success")
     else :
         '''
         Form :
@@ -282,7 +281,7 @@ def teacher_student_edit(request):
         class_list = Class.objects.all()
         context['class_list'] = class_list
         context['student_list'] = student_list
-        #TODO return render(request, <template>, context)
+        return render(request, 'attendance/teacher_student_edit.html', context)
 
 
 @teacher_login_required
