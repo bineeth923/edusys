@@ -18,6 +18,10 @@ class UserIntegretyFailException(Exception):
     pass
 
 
+class RollNoExistsError(Exception):
+    pass
+
+
 def redirect_user_to_index(user):
     """
     Used to direct user to their corresponding index page
@@ -169,6 +173,11 @@ def teacher_add_student(request):
                 student = Student()
                 student.set_user(user)
                 student.phone = form.cleaned_data['phone']
+                rol_list = [student.roll_no for student in
+                            Student.objects.filter(which_class__teacher__user=request.user)]
+                roll = form.cleaned_data['roll']
+                if roll in rol_list:
+                    raise RollNoExistsError
                 student.roll_no = form.cleaned_data['roll']
                 student.which_class = Class.objects.get(teacher__user=request.user)
                 student.save()
@@ -180,6 +189,8 @@ def teacher_add_student(request):
                 student = Student.objects.get(user=user)
                 student.phone = form.cleaned_data['phone']
                 student.save()
+            except RollNoExistsError:
+                return HttpResponseRedirect(reverse('teacher_student_add') + "?status=rollerror")
             return HttpResponseRedirect(reverse('teacher_student_add') + "?status=success")
         else:
             return HttpResponseRedirect(reverse('teacher_student_add') + "?status=error")
@@ -252,12 +263,14 @@ def teacher_test_add(request):  # TODO
                 mark.marks = int(mark)
                 mark.save()
                 # return HttpResponseRedirect(reverse(<name>)+'?status=success)
+        '''
         except KeyError:
             pass
         except IntegrityError:
             pass
         except TypeError:
             pass
+        '''
 
     else:
         '''Description of form required:
@@ -284,10 +297,8 @@ def teacher_test_add(request):  # TODO
 def teacher_test_edit(request):
     context = {}
     if request.method == "POST":
-        if request.POST['teacher']:
-            teacher = Teacher.objects.get(pk=int(request.POST['teacher']))
-            context['teacher'] = teacher
-            # return render(request,<template>,context)
+        test_id = request.POST['test']
+
 
 
 @teacher_login_required
@@ -364,7 +375,7 @@ def teacher_attendance_today(request):
                     present += 1
                 else:
                     absent += 1
-            percentage = float(present)/attendance.count() * 100
+            percentage = float(present) / attendance.count() * 100
             context['absent'] = absent
             context['present'] = present
             context['percentage'] = percentage
