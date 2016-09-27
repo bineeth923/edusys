@@ -7,7 +7,7 @@ from attendance.views import validate_login, common_login, admin_teacher_add, ad
 urlpatterns = [
     url(r'^$', common_login, name='login'),
     url(r'^login/validate/$', validate_login, name='login_validate'),
-    url(r'^logout/$', django.contrib.auth.views.logout, name='logout'),
+    url(r'^logout/$', views.logout_user, name='logout'),
 
     ################### Admin #########################################
 

@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -263,15 +263,13 @@ def teacher_test_add(request):  # TODO
                 mark.marks = int(mark)
                 mark.save()
                 # return HttpResponseRedirect(reverse(<name>)+'?status=success)
-        '''
-        except KeyError:
-            pass
-        except IntegrityError:
-            pass
-        except TypeError:
-            pass
-        '''
 
+        except KeyError:
+            raise Exception("keyerr")
+        except IntegrityError:
+            raise Exception("Int")
+        except TypeError:
+            raise Exception("Type")
     else:
         '''Description of form required:
         * Test Name (test_name)
@@ -437,3 +435,9 @@ Views :
 * Check Test result
 * Check Subject Tests
 '''
+
+
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return HttpResponseRedirect(reverse('login'))
