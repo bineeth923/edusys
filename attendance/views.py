@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -15,6 +15,10 @@ from attendance.helper import *
 
 
 class UserIntegretyFailException(Exception):
+    pass
+
+
+class RollNoExistsError(Exception):
     pass
 
 
@@ -146,6 +150,24 @@ def admin_class_add(request):
         return render(request, 'attendance/admin_class_add.html', context)
 
 
+@admin_login_required
+def admin_class_remove(request):
+    if request.method == "POST":
+        class_id = int(request.POST['class'])
+        class_obj = Class.objects.get(pk=class_id)
+        class_obj.delete()
+        return HttpResponseRedirect(reverse('admin_class_remove') + '?status=success')
+    else:
+        '''
+        Form :
+        * select (class)
+        '''
+        context = get_error_context(request)
+        class_list = Class.objects.all()
+        context['class_list'] = class_list
+        # TODO return(request, <template>, context)
+
+
 ########################################################################################################################
 #                                           Teacher Controller                                                         #
 ########################################################################################################################
@@ -169,6 +191,11 @@ def teacher_add_student(request):
                 student = Student()
                 student.set_user(user)
                 student.phone = form.cleaned_data['phone']
+                rol_list = [student.roll_no for student in
+                            Student.objects.filter(which_class__teacher__user=request.user)]
+                roll = form.cleaned_data['roll']
+                if roll in rol_list:
+                    raise RollNoExistsError
                 student.roll_no = form.cleaned_data['roll']
                 student.which_class = Class.objects.get(teacher__user=request.user)
                 student.save()
@@ -180,6 +207,8 @@ def teacher_add_student(request):
                 student = Student.objects.get(user=user)
                 student.phone = form.cleaned_data['phone']
                 student.save()
+            except RollNoExistsError:
+                return HttpResponseRedirect(reverse('teacher_student_add') + "?status=rollerror")
             return HttpResponseRedirect(reverse('teacher_student_add') + "?status=success")
         else:
             return HttpResponseRedirect(reverse('teacher_student_add') + "?status=error")
@@ -213,6 +242,45 @@ def teacher_remove_student(request):
         form = get_StudentRemoveForm(query_set, None)
         context['form'] = form
         return render(request, 'attendance/teacher_student_delete.html', context)
+
+
+@teacher_login_required
+def teacher_student_edit(request):
+    student_list = Student.objects.filter(which_class__teacher__user=request.user)
+    if request.method == "POST":
+        '''
+        Iterate student list and save details, after verifying roll_no
+        '''
+        roll_list = set()
+        for student in student_list:
+            string = 'student_' + str(student.id) + '_'
+            roll = int(request.POST[string+'roll'])
+            if roll not in roll_list:
+                roll_list.add(roll)
+            else:
+                pass
+                # TODO return HttpResponseRedirect(reverse()+"?=status=error")
+        for student in student_list:
+            string = 'student_' + str(student.id) + '_'
+            student.roll_no = int(request.POST[string+'roll'])
+            student.phone = int(request.POST[string+'phone'])
+            which_class = Class.objects.get(pk=int(request.POST[string+'class']))
+            student.which_class = which_class
+            student.save()
+        #TODO return HttpResponseRedirect(reverse()+"?status=success")
+    else :
+        '''
+        Form :
+        * list containing all students and textbox pre-filled with their details
+        naming convention :
+        * student_<id>_phone
+        * student_<id>_roll
+        * student_<id>_class
+        redirect to same link
+        '''
+        context = get_error_context(request)
+        context['student_list'] = student_list
+        #TODO return render(request, <template>, context)
 
 
 @teacher_login_required
@@ -252,13 +320,13 @@ def teacher_test_add(request):  # TODO
                 mark.marks = int(mark)
                 mark.save()
                 # return HttpResponseRedirect(reverse(<name>)+'?status=success)
-        except KeyError:
-            pass
-        except IntegrityError:
-            pass
-        except TypeError:
-            pass
 
+        except KeyError:
+            raise Exception("keyerr")
+        except IntegrityError:
+            raise Exception("Int")
+        except TypeError:
+            raise Exception("Type")
     else:
         '''Description of form required:
         * Test Name (test_name)
@@ -284,10 +352,7 @@ def teacher_test_add(request):  # TODO
 def teacher_test_edit(request):
     context = {}
     if request.method == "POST":
-        if request.POST['teacher']:
-            teacher = Teacher.objects.get(pk=int(request.POST['teacher']))
-            context['teacher'] = teacher
-            # return render(request,<template>,context)
+        test_id = request.POST['test']
 
 
 @teacher_login_required
@@ -334,7 +399,7 @@ def teacher_attendance_today(request):
         and fill with data from form
         '''
         for student in student_list:
-            string = 'student_' + student.roll_no
+            string = 'student_' + str(student.id)
             is_present = request.POST[string]
             attendance = Attendance(student=student)
             attendance.is_present = is_present
@@ -364,7 +429,7 @@ def teacher_attendance_today(request):
                     present += 1
                 else:
                     absent += 1
-            percentage = float(present)/attendance.count() * 100
+            percentage = float(present) / attendance.count() * 100
             context['absent'] = absent
             context['present'] = present
             context['percentage'] = percentage
@@ -426,3 +491,9 @@ Views :
 * Check Test result
 * Check Subject Tests
 '''
+
+
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return HttpResponseRedirect(reverse('login'))
