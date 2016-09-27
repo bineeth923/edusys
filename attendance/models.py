@@ -71,7 +71,6 @@ class Parent(models.Model):
 
 class Attendance(models.Model):
     date = models.DateTimeField()
-    which_class = models.ForeignKey(Class)
     student = models.ForeignKey(Student)
     is_present = models.BooleanField(default=True)
 
