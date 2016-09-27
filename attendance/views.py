@@ -184,6 +184,11 @@ def teacher_add_student(request):
         form = StudentAddForm(request.POST)
         if form.is_valid():
             try:
+                rol_list = [student.roll_no for student in
+                            Student.objects.filter(which_class__teacher__user=request.user)]
+                roll = form.cleaned_data['roll']
+                if roll in rol_list:
+                    raise RollNoExistsError
                 user = User(username=form.cleaned_data['username'])
                 user.email = form.cleaned_data['email']
                 user.set_password(form.cleaned_data['password'])
@@ -191,11 +196,6 @@ def teacher_add_student(request):
                 student = Student()
                 student.set_user(user)
                 student.phone = form.cleaned_data['phone']
-                rol_list = [student.roll_no for student in
-                            Student.objects.filter(which_class__teacher__user=request.user)]
-                roll = form.cleaned_data['roll']
-                if roll in rol_list:
-                    raise RollNoExistsError
                 student.roll_no = form.cleaned_data['roll']
                 student.which_class = Class.objects.get(teacher__user=request.user)
                 student.save()
@@ -436,6 +436,7 @@ def teacher_attendance_today(request):
             context['present'] = present
             context['percentage'] = percentage
             context['total'] = attendance.count()
+            percentage = "{0:.2f}".format(percentage)
             return render(request, 'attendance/teacher_attendance_taken.html', context)
         context['student_list'] = student_list
         return render(request,'attendance/teacher_attendance.html', context)
