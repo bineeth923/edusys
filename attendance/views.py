@@ -150,6 +150,24 @@ def admin_class_add(request):
         return render(request, 'attendance/admin_class_add.html', context)
 
 
+@admin_login_required
+def admin_class_remove(request):
+    if request.method == "POST":
+        class_id = int(request.POST['class'])
+        class_obj = Class.objects.get(pk=class_id)
+        class_obj.delete()
+        return HttpResponseRedirect(reverse('admin_class_remove') + '?status=success')
+    else:
+        '''
+        Form :
+        * select (class)
+        '''
+        context = get_error_context(request)
+        class_list = Class.objects.all()
+        context['class_list'] = class_list
+        # TODO return(request, <template>, context)
+
+
 ########################################################################################################################
 #                                           Teacher Controller                                                         #
 ########################################################################################################################
@@ -227,6 +245,45 @@ def teacher_remove_student(request):
 
 
 @teacher_login_required
+def teacher_student_edit(request):
+    student_list = Student.objects.filter(which_class__teacher__user=request.user)
+    if request.method == "POST":
+        '''
+        Iterate student list and save details, after verifying roll_no
+        '''
+        roll_list = set()
+        for student in student_list:
+            string = 'student_' + str(student.id) + '_'
+            roll = int(request.POST[string+'roll'])
+            if roll not in roll_list:
+                roll_list.add(roll)
+            else:
+                pass
+                # TODO return HttpResponseRedirect(reverse()+"?=status=error")
+        for student in student_list:
+            string = 'student_' + str(student.id) + '_'
+            student.roll_no = int(request.POST[string+'roll'])
+            student.phone = int(request.POST[string+'phone'])
+            which_class = Class.objects.get(pk=int(request.POST[string+'class']))
+            student.which_class = which_class
+            student.save()
+        #TODO return HttpResponseRedirect(reverse()+"?status=success")
+    else :
+        '''
+        Form :
+        * list containing all students and textbox pre-filled with their details
+        naming convention :
+        * student_<id>_phone
+        * student_<id>_roll
+        * student_<id>_class
+        redirect to same link
+        '''
+        context = get_error_context(request)
+        context['student_list'] = student_list
+        #TODO return render(request, <template>, context)
+
+
+@teacher_login_required
 def teacher_test_add(request):  # TODO
     student_list = Student.objects.filter(which_class__teacher__user=request.user)
     if request.method == "POST":
@@ -298,7 +355,6 @@ def teacher_test_edit(request):
         test_id = request.POST['test']
 
 
-
 @teacher_login_required
 def teacher_report_view_single(request):
     if request.method == "POST":
@@ -343,7 +399,7 @@ def teacher_attendance_today(request):
         and fill with data from form
         '''
         for student in student_list:
-            string = 'student_' + student.roll_no
+            string = 'student_' + str(student.id)
             is_present = request.POST[string]
             attendance = Attendance(student=student)
             attendance.is_present = is_present
