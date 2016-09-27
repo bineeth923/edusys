@@ -11,7 +11,7 @@ h2{
 .student_check, .student_name{
     text-align: center;
     display: table-cell;
-    margin-left : 9em;
+    margin-left : 12em;
     margin-bottom: 2px;
 }
 .student_name{
@@ -38,14 +38,10 @@ input[type="checkbox"]:focus{
   box-shadow: none;
 }
 .btn-default{
-    margin-left: 20em;
+    margin-left: 30em;
     margin-top: 2em;
     width : 40%
 }
-hr {
-    margin-left:27em;
-}
-
 
 @media (max-width: 800px) {
     .student_check, .student_name{
@@ -60,6 +56,14 @@ hr {
     .btn-default{
         width:100%;
         margin-left: 0;
+    }
+}
+@media (min-width: 800px){
+    hr{
+        margin-left : 24em;
+    }
+    .btn-default{
+        margin-left: 22em;
     }
 }
 
