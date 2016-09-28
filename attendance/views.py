@@ -310,14 +310,18 @@ def teacher_subject_add(request):
         context['teacher_list'] = Teacher.objects.all()
         # TODO return render(request,<template>, context)
 
+
 def techer_subject_edit(request):
     context = get_error_context(request)
-    if request.method=="POST":
+    if request.method == "POST":
         pass
     else:
         '''Form
         *
         '''
+        pass
+
+
 @teacher_login_required
 def teacher_test_add(request):  # TODO
     student_list = Student.objects.filter(which_class__teacher__user=request.user)
@@ -331,22 +335,28 @@ def teacher_test_add(request):  # TODO
         '''
         # Do something
         try:
-            subject = Subject.objects.get(pk=int(request.POST['subject']))
-            test = Test()
-            test.subject = subject
-            test.date = request.POST['date']
-            test.name = request.POST['test_name']
-            test.total_marks = int(request.POST['marks_tot'])
-            test.save()
-            for student in student_list:
-                string = 'mark_' + str(student.roll_no)
-                marks = request.POST[string]
-                mark = Marks()
-                mark.student = student
-                mark.test = test
-                mark.marks = int(marks)
-                mark.save()
-                # return HttpResponseRedirect(reverse(<name>)+'?status=success)
+            date = request.POST['date']
+            name = request.POST['test_name']
+            total_marks = int(request.POST['marks_tot'])
+            test_list = []
+            for subject in Subject.objects.filter(which_class__teacher__user=request.user):
+                test = Test()
+                test.date = date
+                test.name = name
+                test.total_marks = total_marks
+                test.subject = subject
+                test.save()
+                test_list.append(test)
+            for test in test_list:
+                for student in student_list:
+                    string = str(test.subject.id) + '_' + str(student.roll_no)
+                    marks = request.POST[string]
+                    mark = Marks()
+                    mark.student = student
+                    mark.test = test
+                    mark.marks = int(marks)
+                    mark.save()
+                    # return HttpResponseRedirect(reverse(<name>)+'?status=success)
 
         except KeyError:
             raise Exception("keyerr")
@@ -359,9 +369,8 @@ def teacher_test_add(request):  # TODO
         * Test Name (test_name)
         * Marks out of (marks_tot)
         * Date (date)
-        * Subject (subject)
         * for List of students
-            > TextBox (marks_<student_roll>)
+            > list of TextBox (<subject.id>_<student_roll>)
         '''
         teacher_list = Teacher.objects.all()
         subject_list = Subject.objects.filter(which_class__teacher__user=request.user)
@@ -392,11 +401,11 @@ def teacher_report_view_single(request):
         student = Student.objects.get(pk=int(request.POST['subject']))
         from_date = parse_date(request.POST['from_date'])
         to_date = parse_date(request.POST['to_date'])
-        attendance = get_attendance_report_from_to(student,from_date,to_date)
+        attendance = get_attendance_report_from_to(student, from_date, to_date)
         mark_report_list = []
         for subject in Subject.objects.filter(which_class=student.which_class):
             test_list = mark_report_subject(student, subject)
-            report = {'test_list':test_list, 'subject':subject}
+            report = {'test_list': test_list, 'subject': subject}
             mark_report_list.append(report)
         context['student'] = student
         context['from_date'] = from_date
@@ -415,7 +424,7 @@ def teacher_report_view_single(request):
             > test_list : list of dictionary with keys : test_name,date,subject,marks,total_marks
             > subject
         '''
-        #TODO return render(request,'<template>', context)
+        # TODO return render(request,'<template>', context)
     else:
         '''Form Description
         * Student name
@@ -440,7 +449,7 @@ def teacher_report_class(request):
         for student in student_list:
             test_list = mark_report_subject(student, subject)
             attendance = get_attendance_complete(student)
-            report = {'test_list':test_list,'student': student, 'attendance':attendance}
+            report = {'test_list': test_list, 'student': student, 'attendance': attendance}
             report_list.append(report)
         context['subject'] = subject
         context['report_list'] = report_list
@@ -456,13 +465,13 @@ def teacher_report_class(request):
             * attendance in key 'attendance'
                 Dictionary with keys: present, absent, total, percentage_present
         '''
-        #TODO return render(request, '<template>', context)
+        # TODO return render(request, '<template>', context)
     else:
         '''Form
         * Subject List (subject)
         '''
         context['subject_list'] = Subject.objects.filter(which_class__teacher__user=request.user)
-        #TODO return render(request,'<template>', context)
+        # TODO return render(request,'<template>', context)
 
 
 @teacher_login_required
