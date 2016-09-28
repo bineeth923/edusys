@@ -9,6 +9,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
@@ -360,6 +361,7 @@ def teacher_test_add(request):  # TODO
         context = get_error_context(request)
         context['teacher_list'] = teacher_list
         context['subject_list'] = subject_list
+        context['student_list'] = student_list
         return render(request, 'attendance/teacher_test_add.html', context)
 
 
@@ -372,6 +374,7 @@ def teacher_test_edit(request):
 
 @teacher_login_required
 def teacher_report_view_single(request):
+    context = get_error_context(request)
     if request.method == "POST":
         '''Task
         * Get subject list from form
@@ -379,6 +382,21 @@ def teacher_report_view_single(request):
         * Get range of date
         return web page with required content
         '''
+        student = Student.objects.get(pk=int(request.POST['subject']))
+        from_date = parse_date(request.POST['from_date'])
+        to_date = parse_date(request.POST['to_date'])
+        attendance = get_attendance_report_from_to(student,from_date,to_date)
+        mark_report_list = []
+        for subject in Subject.objects.filter(which_class=student.which_class):
+            test_list = mark_report_subject(student, subject)
+            report = {'test_list':test_list, 'subject':subject}
+            mark_report_list.append(report)
+        context['student'] = student
+        context['from_date'] = from_date
+        context['to_date'] = to_date
+        context['attendance'] = attendance
+        context['mark_list'] = mark_report_list
+        #TODO return render(request,'<template>', context)
     else:
         '''Form Description
         * Student name
@@ -390,6 +408,7 @@ def teacher_report_view_single(request):
 
 @teacher_login_required
 def teacher_report_class(request):
+    context = get_error_context(request)
     if request.method == "POST":
         '''Task
         * Get Subject List
@@ -398,13 +417,33 @@ def teacher_report_class(request):
         '''
         subject = Subject.objects.get(pk=int(request.POST['subject']))
         student_list = Student.objects.filter(which_class__teacher__user=request.user)
+        report_list = []
         for student in student_list:
-            report = mark_report_subject(student, subject)
-
+            test_list = mark_report_subject(student, subject)
+            attendance = get_attendance_complete(student)
+            report = {'test_list':test_list,'student': student, 'attendance':attendance}
+            report_list.append(report)
+        context['subject'] = subject
+        context['report_list'] = report_list
+        '''
+        !--- Context details ---!
+        * report_list :
+            > list of reports:
+            each report contains:
+            * test_list in key 'test_list'
+                the test_list is further a list of dictionaries.
+                the keys in the dictionary are : test_name,date,subject,marks,total_marks
+            * student in key 'student'
+            * attendance in key 'attendance'
+                Dictionary with keys: present, absent, total, percentage_present
+        '''
+        #TODO return render(request, '<template>', context)
     else:
         '''Form
         * Subject List (subject)
         '''
+        context['subject_list'] = Subject.objects.filter(which_class__teacher__user=request.user)
+        #TODO return render(request,'<template>', context)
 
 
 @teacher_login_required
@@ -472,7 +511,7 @@ def teacher_attendance_report_single(request):
         '''
         student_roll = request.POST['student_roll']
         student = student_list.get(roll_no=student_roll)
-        report = attendance_report(student, request.POST['from'], request.POST['to'])
+        report = get_attendance_report_from_to(student, request.POST['from'], request.POST['to'])
         # TODO return report, student, from_date, to_date to template
     else:
         '''Form

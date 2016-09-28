@@ -77,7 +77,6 @@ class Attendance(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    teacher = models.ForeignKey(Teacher)
     which_class = models.ForeignKey(Class)
 
 

@@ -18,7 +18,7 @@ These functions are to check is a giving User is of which type
 
 
 def is_teacher(user):
-        return user.groups.filter(name='Teacher').exists()
+    return user.groups.filter(name='Teacher').exists()
 
 
 def is_student(user):
@@ -119,12 +119,36 @@ def mark_report_subject(student, subject):
     return mark_details
 
 
-def attendance_report(student, from_date, to_date):
+def get_attendance_report_from_to(student, from_date, to_date):
     """
     returns a dictionary containing the details of the student's attendance in given time range
     """
     # TODO test
     attendance_list = Attendance.objects.filter(student=student, date__gte=from_date, date__lte=to_date)
+    present = 0
+    absent = 0
+    total = attendance_list.count()
+    for att in attendance_list:
+        if att.is_present:
+            present += 1
+        else:
+            absent += 1
+        total += 1
+    percentage_present = (float(present) / total) * 100
+    return {
+        'present': present,
+        'absent': absent,
+        'total': total,
+        'percentage_present': percentage_present
+    }
+
+
+def get_attendance_complete(student):
+    """
+        returns a dictionary containing the details of the student's attendance so far
+        """
+    # TODO test
+    attendance_list = Attendance.objects.filter(student=student)
     present = 0
     absent = 0
     total = attendance_list.count()
