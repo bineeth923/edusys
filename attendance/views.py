@@ -1,3 +1,5 @@
+from difflib import context_diff
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from django.db import IntegrityError
@@ -52,6 +54,12 @@ def common_login(request):
     context = get_error_context(request)
     context['form'] = LoginForm()
     return render(request, 'attendance/login.html', context)
+
+
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return HttpResponseRedirect(reverse('login'))
 
 
 def validate_login(request):
@@ -254,20 +262,20 @@ def teacher_student_edit(request):
         roll_list = set()
         for student in student_list:
             string = 'student_' + str(student.id) + '_'
-            roll = int(request.POST[string+'roll'])
+            roll = int(request.POST[string + 'roll'])
             if roll not in roll_list:
                 roll_list.add(roll)
             else:
-                return HttpResponseRedirect(reverse('teacher_student_edit')+"?=status=error")
+                return HttpResponseRedirect(reverse('teacher_student_edit') + "?=status=error")
         for student in student_list:
             string = 'student_' + str(student.id) + '_'
-            student.roll_no = int(request.POST[string+'roll'])
-            student.phone = int(request.POST[string+'phone'])
-            which_class = Class.objects.get(pk=int(request.POST[string+'class']))
+            student.roll_no = int(request.POST[string + 'roll'])
+            student.phone = int(request.POST[string + 'phone'])
+            which_class = Class.objects.get(pk=int(request.POST[string + 'class']))
             student.which_class = which_class
             student.save()
-        return HttpResponseRedirect(reverse('teacher_student_edit')+"?status=success")
-    else :
+        return HttpResponseRedirect(reverse('teacher_student_edit') + "?status=success")
+    else:
         '''
         Form :
         * list containing all students and textbox pre-filled with their details
@@ -284,6 +292,24 @@ def teacher_student_edit(request):
         return render(request, 'attendance/teacher_student_edit.html', context)
 
 
+def teacher_subject_add(request):
+    if request.method == "POST":
+        subject = Subject()
+        subject.name = request.POST['subject']
+        subject.teacher = Teacher.objects.get(pk=int(request.POST['teacher']))
+        subject.which_class = Class.objects.get(teacher__user=request.user)
+        subject.save()
+        # TODO return HttpResponseRedirect(reverse()+"?status=success")
+    else:
+        '''Form
+        * Subject Name (subject)
+        * Teacher Select (teacher)
+        '''
+        context = get_error_context(request)
+        context['teacher_list'] = Teacher.objects.all()
+        # TODO return render(request,<template>, context)
+
+
 @teacher_login_required
 def teacher_test_add(request):  # TODO
     student_list = Student.objects.filter(which_class__teacher__user=request.user)
@@ -297,15 +323,7 @@ def teacher_test_add(request):  # TODO
         '''
         # Do something
         try:
-            if 'new_subject' in request.POST:
-                subject_name = request.POST['new_subject']
-                teacher = int(request.POST['new_teacher'])
-                subject = Subject(name=subject_name)
-                subject.teacher = Teacher.objects.get(pk=teacher)
-                subject.which_class = Teacher.objects.get(user=request.user).which_class
-                subject.save()
-            else:
-                subject = Subject.objects.get(pk=int(request.POST['subject']))
+            subject = Subject.objects.get(pk=int(request.POST['subject']))
             test = Test()
             test.subject = subject
             test.date = request.POST['date']
@@ -313,7 +331,7 @@ def teacher_test_add(request):  # TODO
             test.total_marks = int(request.POST['marks_tot'])
             test.save()
             for student in student_list:
-                string = 'mark_' + student.roll_no
+                string = 'mark_' + str(student.roll_no)
                 marks = request.POST[string]
                 mark = Marks()
                 mark.student = student
@@ -333,11 +351,7 @@ def teacher_test_add(request):  # TODO
         * Test Name (test_name)
         * Marks out of (marks_tot)
         * Date (date)
-        * Radio button/tab
-            > Select existing subject (subject)
-            > New Subject
-                => Subject name (new_subject)
-                => Select Teacher (can't add new teachers) (new_teacher)
+        * Subject (subject)
         * for List of students
             > TextBox (marks_<student_roll>)
         '''
@@ -382,11 +396,14 @@ def teacher_report_class(request):
         * Get From and To Date
         return table with the data
         '''
+        subject = Subject.objects.get(pk=int(request.POST['subject']))
+        student_list = Student.objects.filter(which_class__teacher__user=request.user)
+        for student in student_list:
+            report = mark_report_subject(student, subject)
+
     else:
         '''Form
-        * Subject List
-        * From Date
-        * To Date
+        * Subject List (subject)
         '''
 
 
@@ -418,7 +435,7 @@ def teacher_attendance_today(request):
         * Student name as label, checkbox to determine present or not
         '''
         attendance = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
-                date=timezone.now().date()).order_by('student__roll_no')
+            date=timezone.now().date()).order_by('student__roll_no')
         context = get_error_context(request)
         if attendance.count() != 0:
             present = 0
@@ -437,7 +454,7 @@ def teacher_attendance_today(request):
             context['percentage'] = percentage
             return render(request, 'attendance/teacher_attendance_taken.html', context)
         context['student_list'] = student_list
-        return render(request,'attendance/teacher_attendance.html', context)
+        return render(request, 'attendance/teacher_attendance.html', context)
         # attendance, student_list
 
 
@@ -492,9 +509,3 @@ Views :
 * Check Test result
 * Check Subject Tests
 '''
-
-
-def logout_user(request):
-    if request.user.is_authenticated:
-        logout(request)
-    return HttpResponseRedirect(reverse('login'))
