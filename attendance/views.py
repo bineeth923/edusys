@@ -320,7 +320,7 @@ def teacher_test_add(request):  # TODO
                 mark.test = test
                 mark.marks = int(marks)
                 mark.save()
-                # return HttpResponseRedirect(reverse(<name>)+'?status=success)
+                HttpResponseRedirect(reverse('teacher_test_add')+'?status=success')
 
         except KeyError:
             raise Exception("keyerr")
@@ -346,7 +346,7 @@ def teacher_test_add(request):  # TODO
         context = get_error_context(request)
         context['teacher_list'] = teacher_list
         context['subject_list'] = subject_list
-        # TODO return(request,<template>,context)
+        return render(request, 'attendance/teacher_test_add.html', context)
 
 
 @teacher_login_required

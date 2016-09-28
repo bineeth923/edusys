@@ -1,10 +1,37 @@
 .container{
     overflow-x: auto;
+    position: absolute;
+}
+#button_submit_student_edit{
+    display: block;
+    text-align: center;
+}
+.btn-default{
+    width : 40%;
+
+}
+input[type="checkbox"]{
+cursor: pointer;
+-webkit-appearance: none;
+background: #34495E;
+position: relative;
+box-sizing: content-box ;
+width: 20px;
+height: 20px;
+border-width: 0;
+border-radius: 25%;
+transition: all .3s linear;
+}
+input[type="checkbox"]:checked{
+  background-color: #2ECC71;
+}
+input[type="checkbox"]:focus{
+  outline: 0 none;
+  box-shadow: none;
 }
 table {
     border-collapse: collapse;
     width: 100%;
-    position: absolute;
 }
 
 th, td {
