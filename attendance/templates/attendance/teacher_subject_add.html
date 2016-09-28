@@ -1,6 +1,6 @@
  <head>
      {% load static %}
-     <title>Add Test/Exam</title>
+     <title>Add Subjects </title>
      <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -8,8 +8,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
-    <link rel="stylesheet" href="{% static "attendance/teacher_test_add.css" %}">
-
+    <link rel="stylesheet" href="{% static "attendance/teacher_subject_add.css" %}">
 </head>
 
 
@@ -51,57 +50,32 @@
 
     </nav>
 
-<div class="container col-sm-offset-2 col-sm-9">
-    <h2>Enter the details of Exam and the marks of students</h2>
-    <button class="btn btn-inverse" onclick="{% url 'teacher_subject_add' %}">Add Subjects</button>
-    <form class="form-horizontal" action="{% url 'teacher_student_add' %}" method="post">
-            {% csrf_token %}
+<div class="container">
+    <h2>Add Subjects</h2>
+    <form class="form-horizontal" action="{% url 'teacher_subject_add' %}" method="post">
+        {% csrf_token %}
         <div class="form-group">
-            <label class="control-label   col-sm-2" for="id_exam_name">Exam Name:</label>
-          <div class="col-sm-7">
-            <input type="text" class="form-control" id="id_exam_name" maxlength="50"  name="test_name"placeholder="Enter exam name" required >
-          </div>
+            <label class="control-label  col-sm-offset-1 col-sm-2" for="id_subject">Subject:</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="id_subject" maxlength="50"  name="subject"placeholder="Enter subject name" required autofocus>
+            </div>
         </div>
         <div class="form-group">
-            <label class="control-label   col-sm-2" for="id_total_marks">Marks out of:</label>
-          <div class="col-sm-7">
-            <input type="text" class="form-control" id="id_total_marks" maxlength="50"  name="marks_tot" placeholder="Maximum marks" required >
-          </div>
+            <label class="control-label col-sm-offset-1  col-sm-2" for="id_teacher">Teacher:</label>
+            <div class="col-sm-7">
+                <select name="teacher" class="form-control" id="id_teacher">
+                            {% for teacher in teacher_list %}
+                                <option value="{{ teacher.id }}">{{ teacher }}</option>
+                            {% endfor %}
+                </select>
+            </div>
         </div>
         <div class="form-group">
-          <label class="control-label  col-sm-2" for="id_date">Date:</label>
-          <div class="col-sm-7">
-            <input type="date" class="form-control" id="id_date" maxlength="50" name="date" placeholder="Enter date" required >
-          </div>
-        </div>
-        <table >
-            <tr>
-                <th>SNo:</th>
-                <th>Username</th>
-                <th>Roll No</th>
-                {% for subject in subject_list %}
-                    <th>Marks in {{ subject.name }}</th>
-                {% endfor %}
-            </tr>
-            {% for student in student_list   %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ student.user.username }}</td>
-                    <td><input type="text" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll" id="student_roll"></td>
-                    {% for subject in subject_list %}
-                        <td><input type="number" value="{{ subject }}" name="mark_{{ student.roll_no }}">{{ subject }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table><br><br>
-
-       <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-6">
+          <div class="col-sm-offset-4 col-sm-6">
             <center><button type="submit" class="btn btn-default" value="Add" >Submit</button></center>
           </div>
 
         </div>
     </form>
-
 </div>
 </body>

@@ -299,7 +299,7 @@ def teacher_subject_add(request):
         subject.teacher = Teacher.objects.get(pk=int(request.POST['teacher']))
         subject.which_class = Class.objects.get(teacher__user=request.user)
         subject.save()
-        # TODO return HttpResponseRedirect(reverse()+"?status=success")
+        return HttpResponseRedirect(reverse('teacher_subject_add')+"?status=success")
     else:
         '''Form
         * Subject Name (subject)
@@ -307,7 +307,7 @@ def teacher_subject_add(request):
         '''
         context = get_error_context(request)
         context['teacher_list'] = Teacher.objects.all()
-        # TODO return render(request,<template>, context)
+        return render(request,'attendance/teacher_subject_add.html', context)
 
 
 @teacher_login_required
