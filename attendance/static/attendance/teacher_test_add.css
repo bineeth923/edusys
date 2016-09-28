@@ -1,15 +1,18 @@
 .container{
-    overflow-x: auto;
+
     position: absolute;
 }
 .btn-default{
     width : 40%;
 
 }
-
+.table_new{
+    overflow-x: auto;
+}
 table {
     border-collapse: collapse;
     width: 100%;
+    overflow-x: auto;
 }
 
 th, td {
