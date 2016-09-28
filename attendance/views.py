@@ -298,7 +298,7 @@ def teacher_subject_add(request):
         subject = Subject()
         subject.name = request.POST['subject']
         subject.teacher = Teacher.objects.get(pk=int(request.POST['teacher']))
-        subject.which_class = Class.objects.get(teacher__user=request.user)
+        subject.which_class = Teacher.objects.get(user=request.user).which_class
         subject.save()
         # TODO return HttpResponseRedirect(reverse()+"?status=success")
     else:
