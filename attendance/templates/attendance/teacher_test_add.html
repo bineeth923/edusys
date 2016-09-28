@@ -1,6 +1,6 @@
  <head>
      {% load static %}
-     <title>Edit Student Details</title>
+     <title>Add Test/Exam</title>
      <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -8,7 +8,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
-    <link rel="stylesheet" href="{% static "attendance/teacher_student_edit.css" %}">
+    <link rel="stylesheet" href="{% static "attendance/teacher_test_add.css" %}">
 
 </head>
 
@@ -44,6 +44,7 @@
                     <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_remove' %}"> Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                 </ul>
             </div>
         </div>
@@ -51,40 +52,57 @@
     </nav>
 
 <div class="container col-sm-offset-2 col-sm-9">
-    <h2>Edit the details of the student..</h2>
-    <form action="{% url 'teacher_student_edit' %}" method="post">
-        {% csrf_token %}
+    <h2>Enter the details of Exam and the marks of students</h2>
+    <button class="btn btn-inverse" onclick="{% url 'teacher_subject_add' %}">Add Subjects</button>
+    <form class="form-horizontal" action="{% url 'teacher_test_add' %}" method="post">
+            {% csrf_token %}
+        <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_exam_name">Exam Name:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_exam_name" maxlength="50"  name="test_name"placeholder="Enter exam name" required >
+          </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_total_marks">Marks out of:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_total_marks" maxlength="50"  name="marks_tot" placeholder="Maximum marks" required >
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label  col-sm-2" for="id_date">Date:</label>
+          <div class="col-sm-7">
+            <input type="date" class="form-control" id="id_date" maxlength="50" name="date" placeholder="Enter date" required >
+          </div>
+        </div>
+        <div class="table_new">
         <table >
             <tr>
                 <th>SNo:</th>
                 <th>Username</th>
                 <th>Roll No</th>
-                <th>Class</th>
-                <th>Phone No</th>
-                <th>Delete?</th>
+                {% for subject in subject_list %}
+                    <th>Marks in {{ subject.name }}</th>
+                {% endfor %}
             </tr>
-            {% for student in  student_list  %}
+            {% for student in student_list   %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ student.user.username }}</td>
-                    <td><input type="text" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll" id="student_roll"></td>
-                    <td>
-                        <select name="student_{{ student.id }}_class">
-                            <option value="{{ student.which_class.id }}" selected="selected" >{{ student.which_class }}</option>
-                            {% for class in class_list %}
-                                <option value="{{ class.id }}">{{ class }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td><input type="text" value="{{ student.phone }}" name="student_{{ student.id }}_phone"></td>
-                    <td><input type="checkbox" name="student_{{ student.id }}_delete" > </td>
+                    <td>{{ student.roll_no }}</td>
+                    {% for subject in subject_list %}
+                        <td><input type="number" value="{{ subject.name }}" name="mark_{{ student.roll_no }}"></td>
+                    {% endfor %}
                 </tr>
             {% endfor %}
         </table><br><br>
-    <div id="button_submit_student_edit">
-        <button type="submit" class="btn btn-default" value="Add" >Submit</button>
-    </div>
-    </form>
-</div>
+        </div>
+       <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-6">
+            <center><button type="submit" class="btn btn-default" value="Add" >Submit</button></center>
+          </div>
 
+       </div>
+    </form>
+
+</div>
 </body>

@@ -1,0 +1,28 @@
+.container{
+
+    position: absolute;
+}
+.btn-default{
+    width : 40%;
+
+}
+.table_new{
+    overflow-x: auto;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: auto;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}

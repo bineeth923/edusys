@@ -300,7 +300,7 @@ def teacher_subject_add(request):
         subject.teacher = Teacher.objects.get(pk=int(request.POST['teacher']))
         subject.which_class = Teacher.objects.get(user=request.user).which_class
         subject.save()
-        # TODO return HttpResponseRedirect(reverse()+"?status=success")
+        return HttpResponseRedirect(reverse('teacher_subject_add')+"?status=success")
     else:
         '''Form
         * Subject Name (subject)
@@ -308,7 +308,7 @@ def teacher_subject_add(request):
         '''
         context = get_error_context(request)
         context['teacher_list'] = Teacher.objects.all()
-        # TODO return render(request,<template>, context)
+        return render(request,'attendance/teacher_subject_add.html', context)
 
 
 def techer_subject_edit(request):
@@ -356,7 +356,7 @@ def teacher_test_add(request):  # TODO
                     mark.test = test
                     mark.marks = int(marks)
                     mark.save()
-                    # return HttpResponseRedirect(reverse(<name>)+'?status=success)
+            return HttpResponseRedirect(reverse('teacher_test_add')+'?status=success)
 
         except KeyError:
             raise Exception("keyerr")
@@ -378,7 +378,7 @@ def teacher_test_add(request):  # TODO
         context['teacher_list'] = teacher_list
         context['subject_list'] = subject_list
         context['student_list'] = student_list
-        # TODO return(request,<template>,context)
+        return render(request, 'attendance/teacher_test_add.html', context)
 
 
 @teacher_login_required
