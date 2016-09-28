@@ -310,7 +310,14 @@ def teacher_subject_add(request):
         context['teacher_list'] = Teacher.objects.all()
         return render(request,'attendance/teacher_subject_add.html', context)
 
-
+def techer_subject_edit(request):
+    context = get_error_context(request)
+    if request.method=="POST":
+        pass
+    else:
+        '''Form
+        *
+        '''
 @teacher_login_required
 def teacher_test_add(request):  # TODO
     student_list = Student.objects.filter(which_class__teacher__user=request.user)
@@ -396,6 +403,18 @@ def teacher_report_view_single(request):
         context['to_date'] = to_date
         context['attendance'] = attendance
         context['mark_list'] = mark_report_list
+        '''
+        !--- Context details ---!
+        * student
+        * from_date
+        * to_date
+        * attendance :
+            > Dictionary with keys : present, absent, total, percentage_present
+        * mark_list list of dictionary
+            with keys : test_list, subject
+            > test_list : list of dictionary with keys : test_name,date,subject,marks,total_marks
+            > subject
+        '''
         #TODO return render(request,'<template>', context)
     else:
         '''Form Description
