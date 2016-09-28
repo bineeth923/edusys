@@ -24,9 +24,9 @@ urlpatterns = [
     url(r'^teacher/student/remove', views.teacher_remove_student, name="teacher_student_remove"),
     url(r'^teacher/student/edit', views.teacher_student_edit, name="teacher_student_edit"),
     url(r'teacher/subject/add', views.teacher_subject_add, name="teacher_subject_add"),
+    url(r'^teacher/subject/add', views.teacher_subject_add, name="teacher_subject_add"),
     # TODO test
     url(r'^teacher/test/add', views.teacher_test_add, name="teacher_test_add"),
-    url(r'^teacher/subject/add', views.teacher_subject_add, name="teacher_subject_add"),
         # TODO test edit
         # TODO test remove
     url(r'teacher/attendance', views.teacher_attendance_today, name="teacher_attendance")
