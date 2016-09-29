@@ -296,7 +296,7 @@ def teacher_subject_add(request):
         subject.name = request.POST['subject']
         subject.which_class = Teacher.objects.get(user=request.user).which_class
         subject.save()
-        return HttpResponseRedirect(reverse('teacher_subject_add')+"?status=success")
+        return HttpResponseRedirect(reverse('teacher_subject_add') + "?status=success")
     else:
         '''Form
         * Subject Name (subject)
@@ -316,12 +316,12 @@ def teacher_subject_edit(request):
     if request.method == "POST":
         for subject in subject_list:
             string = str(subject.id) + "_"
-            if string+'delete' in request.POST:
+            if string + 'delete' in request.POST:
                 subject.delete()
                 continue
-            subject.name = request.POST[string+'name']
+            subject.name = request.POST[string + 'name']
             subject.save()
-        # TODO return HttpResponseRedirect(reverse()+"?=status=success")
+            # TODO return HttpResponseRedirect(reverse()+"?=status=success")
     else:
         '''Form
         * List of all subjects
@@ -370,7 +370,7 @@ def teacher_test_add(request):  # TODO
                     mark.test = test
                     mark.marks = int(marks)
                     mark.save()
-            return HttpResponseRedirect(reverse('teacher_test_add')+'?status=success')
+            return HttpResponseRedirect(reverse('teacher_test_add') + '?status=success')
 
         except KeyError:
             raise Exception("keyerr")
@@ -401,30 +401,50 @@ def teacher_test_edit(request):
     if request.method == "POST":
         test_name = request.POST['test']
         test_list = Test.objects.filter(name=test_name)
-        if 'select' in request.POST:
-            context['test_list'] = test_list
+        if 'edit' in request.POST:
+            """ When edit checkbox is selected"""
+            '''FORM
+            * textbox -> name : <mark.id>
+            * total_marks -> name : total_mark
+            '''
+            test_list = test_list.order_by('name')
             mark_list = []
-            for test in test_list:
-                marks = Marks.objects.filter(test=test)
+            for student in Student.objects.filter(which_class__teacher__user=request.user).order_by('roll_no'):
+                marks = Marks.objects.filter(student=student, test__name=test_name).order_by('test__subject__name')
                 mark_list.append(marks)
+            context['test_list'] = test_list
             context['mark_list'] = mark_list
+            '''
+            -----Context details-----
+            * mark_list -> a list of marks(list),
+                            marks is a list of all mark objects of a student ordered by subject name.
+            * test_list -> list of test objects
+            '''
             # TODO return render(request, <template>, context)
         elif 'delete' in request.POST:
+            """
+            When the delete checkbox is selected.
+            """
             Test.objects.filter(name=test_name).delete()
         else:
+            """ Editing the test, and marks associated with it"""
+            total_mark = int(request.POST['total_mark'])
             for test in test_list:
+                test.total_marks = total_mark
+                test.save()
                 marks = Marks.objects.filter(test=test)
                 for mark in marks:
                     mark.marks = request.POST[str(mark.id)]
                     mark.save()
-        # TODO return HttpResponseRedirect(reverse()+'?status=success')
+                    # TODO return HttpResponseRedirect(reverse()+'?status=success')
     else:
         '''
         Form:
         * List of all exams:
-        * select option - edit, delete
+        * list of test by name
+        * 2 checkbox by name select and delete
         '''
-        test_names = [ test.name for test in Test.objects.filter(subject__which_class__teacher__user=request.user)]
+        test_names = [test.name for test in Test.objects.filter(subject__which_class__teacher__user=request.user)]
         test_names = set(test_names)
         context['test_names'] = test_names
         # TODO return render(request, <template>, context)
@@ -563,6 +583,22 @@ def teacher_attendance_today(request):
         context['student_list'] = student_list
         return render(request, 'attendance/teacher_attendance.html', context)
         # attendance, student_list
+
+
+def teacher_attendance_edit(request):
+    if request.method == 'POST':
+
+        pass
+    else:
+        '''
+        Form
+        * Date -> name : date
+        * 2 checkbox : edit, delete
+        '''
+        context = get_error_context(request)
+        # TODO return render(request, <template>, context)
+
+    return None
 
 
 ########################################################################################################################
