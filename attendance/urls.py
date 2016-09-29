@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^teacher/subject/edit/$', views.teacher_subject_edit, name="teacher_subject_edit"),
 
     url(r'^teacher/test/add/$', views.teacher_test_add, name="teacher_test_add"),
-    url(r'^teacher/test/edit/$', views.teacher_test_edit, name="teacher_test_edit"),
+    url(r'^teacher/test/edit/$', views.teacher_test_edit, name="teacher_test_select"),
     # test remove merged with edit
     url(r'^teacher/attendance/$', views.teacher_attendance_today, name="teacher_attendance_today"),
     url(r'^teacher/attendance/edit/$', views.teacher_attendance_edit, name="teacher_attendance_edit"),

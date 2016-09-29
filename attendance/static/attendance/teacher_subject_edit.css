@@ -1,16 +1,6 @@
-body{
-    overflow: hidden;
-}
 .container{
+    overflow-x: auto;
     position: absolute;
-
-}
-#button_submit_student_edit{
-    display: block;
-    text-align: center;
-}
-.studentEdit{
-    overflow-x:auto ;
 }
 
 .btn-default{

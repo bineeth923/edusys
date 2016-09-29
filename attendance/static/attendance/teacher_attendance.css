@@ -8,6 +8,13 @@ h2{
 .student_name{
     float: left;
 }
+.attendance_header{
+
+}
+#header{
+    color : black;
+
+}
 .student_check, .student_name{
     text-align: center;
     display: table-cell;
@@ -66,4 +73,11 @@ input[type="checkbox"]:focus{
         margin-left: 22em;
     }
 }
-
+#selectAll{
+    font-size: 1em;
+    text-align: left;
+}
+#selectAll input[type="checkbox"]{
+    width : 15px;
+    height : 15px;
+}

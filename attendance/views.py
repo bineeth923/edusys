@@ -321,7 +321,7 @@ def teacher_subject_edit(request):
                 continue
             subject.name = request.POST[string + 'name']
             subject.save()
-            # TODO return HttpResponseRedirect(reverse()+"?=status=success")
+        return HttpResponseRedirect(reverse('teacher_subject_edit')+"?=status=success")
     else:
         '''Form
         * List of all subjects
@@ -333,11 +333,11 @@ def teacher_subject_edit(request):
             <subject.id>_delete
         '''
         context['subject_list'] = subject_list
-        # TODO return render(request, <template>, context)
+        return render(request, 'attendance/teacher_subject_edit.html', context)
 
 
 @teacher_login_required
-def teacher_test_add(request):  # TODO
+def teacher_test_add(request):
     student_list = Student.objects.filter(which_class__teacher__user=request.user)
     if request.method == "POST":
         ''' TASKs
@@ -420,7 +420,7 @@ def teacher_test_edit(request):
                             marks is a list of all mark objects of a student ordered by subject name.
             * test_list -> list of test objects
             '''
-            # TODO return render(request, <template>, context)
+            return render(request, 'attendance/teacher_test_edit.html', context)
         elif 'delete' in request.POST:
             """
             When the delete checkbox is selected.
@@ -436,18 +436,18 @@ def teacher_test_edit(request):
                 for mark in marks:
                     mark.marks = request.POST[str(mark.id)]
                     mark.save()
-                    # TODO return HttpResponseRedirect(reverse()+'?status=success')
+        return HttpResponseRedirect(reverse('teacher_test_select')+'?status=success')
     else:
         '''
         Form:
         * List of all exams:
         * list of test by name
-        * 2 checkbox by name select and delete
+        * 2 checkbox by name edit and delete
         '''
         test_names = [test.name for test in Test.objects.filter(subject__which_class__teacher__user=request.user)]
         test_names = set(test_names)
         context['test_names'] = test_names
-        # TODO return render(request, <template>, context)
+        return render(request, 'attendance/teacher_test_select.html', context)
 
 
 @teacher_login_required

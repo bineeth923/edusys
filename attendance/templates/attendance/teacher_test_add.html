@@ -45,6 +45,7 @@
                     <li><a href="{% url 'teacher_student_remove' %}"> Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                 </ul>
             </div>
         </div>
@@ -53,7 +54,8 @@
 
 <div class="container col-sm-offset-2 col-sm-9">
     <h2>Enter the details of Exam and the marks of students</h2>
-    <button class="btn btn-inverse" onclick="{% url 'teacher_subject_add' %}">Add Subjects</button>
+    <button class="btn btn-inverse " onclick="location.href='{% url 'teacher_subject_add' %}'">Add Subjects</button>
+    <button class="btn btn-inverse " onclick="location.href='{% url 'teacher_subject_edit' %}'">Edit/Delete Subjects</button>
     <form class="form-horizontal" action="{% url 'teacher_test_add' %}" method="post">
             {% csrf_token %}
         <div class="form-group">
@@ -90,7 +92,7 @@
                     <td>{{ student.user.username }}</td>
                     <td>{{ student.roll_no }}</td>
                     {% for subject in subject_list %}
-                        <td><input type="number" value="{{ subject.name }}" name="mark_{{ student.roll_no }}"></td>
+                        <td><input type="number" value="{{ subject.name }}" name="{{ subject.id }}_{{ student.roll_no }}"></td>
                     {% endfor %}
                 </tr>
             {% endfor %}
@@ -100,7 +102,6 @@
           <div class="col-sm-offset-2 col-sm-6">
             <center><button type="submit" class="btn btn-default" value="Add" >Submit</button></center>
           </div>
-
        </div>
     </form>
 

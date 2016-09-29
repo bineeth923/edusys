@@ -1,6 +1,6 @@
  <head>
      {% load static %}
-     <title>Today's Attendance</title>
+     <title>Welcome Teacher</title>
      <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -8,12 +8,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
-    <link rel="stylesheet" href="{% static "attendance/teacher_attendance.css" %}">
+    <link rel="stylesheet" href="{% static "attendance/teacher_test_select.css" %}">
+    <link rel="stylesheet" href="{% static "attendance/teacher_student_edit.css" %}">
+
 </head>
 
 
 <body>
-<!-- Main nav bar-->
 <div class="navbar navbar-inverse">
         <div class="">
             <div class="navbar-header" role="navigation" >
@@ -52,47 +53,43 @@
         </div>
 
     </nav>
-<!-- Nav bar ends -->
-<!--Attendance main view-->
-<div class="container">
-    <h2>Take today's attendance</h2>
-    <form action="{% url 'teacher_attendance' %}" method="post">
+
+
+<div class="container col-sm-offset-2 col-sm-9">
+    <h2>Edit the marks of the students</h2>
+    <form class="form-horizontal" action="{% url 'teacher_test_select' %}" method="post">
         {% csrf_token %}
-        <div  id="attendance_main">
-        <div class="attendance_header">
-            <div class="student_name"> <label style="font-weight: 500">Name</label></div>
-            <div class="student_check"> <label id="selectAll"><input type="checkbox" name="select_all" id="id_select_all"></label></div>
-        <hr id="header">
+        <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_exam_name">Exam Name:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_exam_name" maxlength="50" value="{{ test_list.0.name }}"  name="test_name" placeholder="Exam name" required readonly >
+          </div>
         </div>
-            {% for student in student_list %}
-                <label for="id_student_{{ student.id }}" class="Student_details">
-                    <div class="student_name" id="id_student_{{ student.id }}">
-                        {{ student }}
-                    </div>
-                    <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check">
-                <hr>
-                </label>
-                <br clear="both">
-            {% endfor %}
+        <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_total_marks">Total marks:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_exam_name" max="9999" value="{{ test_list.0.total_marks }}"  name="total_marks" placeholder="Total marks" required readonly >
+          </div>
         </div>
-        <button type="submit" class="btn btn-default" value="Add" >Submit</button>
+        <table>
+            <tr>
+                <th>Roll no</th>
+                <th>Name</th>
+                {% for test in test_list %}
+                    <th>{{ test.subject.name }}</th>
+                {% endfor %}
+            </tr>
+                {% for marks in mark_list %}
+                    <tr>
+                        <td>{{ marks.0.student.roll_no }}</td>
+                        <td>{{ marks.0.student.user.username }}</td>
+                        {% for mark in marks %}
 
-
+                            <td>{{ mark.marks }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+        </table>
     </form>
 </div>
 </body>
-<script>
-    $('#id_select_all').click(function(event) {
-    if(this.checked) {
-        // Iterate each checkbox
-        $(':checkbox').each(function() {
-            this.checked = true;
-        });
-    }
-        else{
-        $(':checkbox').each(function() {
-            this.checked = false;
-        });
-    }
-});
-</script>
