@@ -14,7 +14,7 @@ from attendance.models import Class, Teacher, Student, Subject
 from attendance.helper import *
 
 
-class UserIntegretyFailException(Exception):
+class UserIntegrityFailException(Exception):
     pass
 
 
@@ -26,7 +26,7 @@ def redirect_user_to_index(user):
     """
     Used to direct user to their corresponding index page
     :param user: User
-    :return: HttpResponse
+    :return: HttpResponseRedirect
     """
     if is_student(user):
         # do something
@@ -43,7 +43,7 @@ def redirect_user_to_index(user):
         # do something
         return HttpResponseRedirect(reverse('admin_index'))
     else:
-        raise UserIntegretyFailException
+        raise UserIntegrityFailException
 
 
 def common_login(request):
@@ -294,7 +294,6 @@ def teacher_subject_add(request):
     if request.method == "POST":
         subject = Subject()
         subject.name = request.POST['subject']
-        subject.teacher = Teacher.objects.get(pk=int(request.POST['teacher']))
         subject.which_class = Teacher.objects.get(user=request.user).which_class
         subject.save()
         return HttpResponseRedirect(reverse('teacher_subject_add')+"?status=success")
@@ -305,7 +304,7 @@ def teacher_subject_add(request):
         '''
         context = get_error_context(request)
         context['teacher_list'] = Teacher.objects.all()
-        return render(request,'attendance/teacher_subject_add.html', context)
+        return render(request, 'attendance/teacher_subject_add.html', context)
 
 
 def teacher_subject_edit(request):
@@ -329,7 +328,7 @@ def teacher_subject_edit(request):
             * Subject name textbox
             * checkbox to delete it
 
-            naming convension:
+            naming convention:
             <subject.id>_name
             <subject.id>_delete
         '''
@@ -533,7 +532,7 @@ def teacher_attendance_today(request):
             attendance.date = timezone.now().date()
             attendance.save()
         # return redirect
-        return HttpResponseRedirect(reverse('teacher_index'))
+        return HttpResponseRedirect(reverse('teacher_teacher_attendance_today'))
     else:
         ''' Task
         Check if attendance for today already taken,
@@ -549,7 +548,6 @@ def teacher_attendance_today(request):
         if attendance.count() != 0:
             present = 0
             absent = 0
-            percentage = 0
             for a in attendance:
                 if a.is_present:
                     present += 1

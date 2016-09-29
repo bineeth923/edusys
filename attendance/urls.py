@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^login/validate/$', validate_login, name='login_validate'),
     url(r'^logout/$', views.logout_user, name='logout'),
 
-    ################### Admin #########################################
+    # ------------------ Admin ---------------------------------------
 
     url(r'^admin/$', admin_index, name="admin_index"),
     url(r'^admin/teacher/add/$', admin_teacher_add, name='admin_teacher_add'),
@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^admin/class/add', views.admin_class_add, name='admin_class_add'),
     url(r'admin/class/remove', views.admin_class_remove, name='admin_class_remove'),
 
-    ################### Teacher ########################################
+    # ------------------ Teacher --------------------------------------
 
     url(r'^teacher/$', views.teacher_index, name="teacher_index"),
     url(r'^teacher/student/add', views.teacher_add_student, name="teacher_student_add"),
@@ -25,18 +25,19 @@ urlpatterns = [
     url(r'^teacher/student/edit', views.teacher_student_edit, name="teacher_student_edit"),
     url(r'teacher/subject/add', views.teacher_subject_add, name="teacher_subject_add"),
     url(r'^teacher/subject/add', views.teacher_subject_add, name="teacher_subject_add"),
-    # TODO test
-    url(r'^teacher/test/add', views.teacher_test_add, name="teacher_test_add"),
-        # TODO test edit
-        # TODO test remove
-    url(r'teacher/attendance', views.teacher_attendance_today, name="teacher_attendance")
-    # TODO attendance
-        # TODO edit attendace
-        # TODO remove attendance
-    # TODO report
-        # TODO Individual
-        # TODO Class
-    ################### Student #########################################
 
+    url(r'^teacher/test/add', views.teacher_test_add, name="teacher_test_add"),
+    url(r'^teacher/test/edit', views.teacher_test_edit, name="teacher_test_edit"),
+    url(r)
+    # test remove merged with edit
+    url(r'teacher/attendance', views.teacher_attendance_today, name="teacher_attendance"),
+    # TODO attendance
+    # TODO edit attendace
+    # TODO remove attendance
+
+    url(r'teacher/report/student', views.teacher_report_view_single, name="teacher_report_single"),
+    url(r'teacher/report/class', views.teacher_report_class, name="teacher_report_class"),
+
+    # -------------------- Student --------------------------------------
 
 ]
