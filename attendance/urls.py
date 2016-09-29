@@ -40,5 +40,9 @@ urlpatterns = [
         # TODO Class
     ################### Student #########################################
 
+    url(r'teacher/report/student', views.teacher_report_view_single, name="teacher_report_single"),
+    url(r'teacher/report/class', views.teacher_report_class, name="teacher_report_class"),
+
+    # -------------------- Student --------------------------------------
 
 ]
