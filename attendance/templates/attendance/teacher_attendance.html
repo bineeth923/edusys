@@ -59,6 +59,11 @@
     <form action="{% url 'teacher_attendance' %}" method="post">
         {% csrf_token %}
         <div  id="attendance_main">
+        <div class="attendance_header">
+            <div class="student_name"> <label style="font-weight: 500">Name</label></div>
+            <div class="student_check"> <label id="selectAll"><input type="checkbox" name="select_all" id="id_select_all"></label></div>
+        <hr id="header">
+        </div>
             {% for student in student_list %}
                 <label for="id_student_{{ student.id }}" class="Student_details">
                     <div class="student_name" id="id_student_{{ student.id }}">
@@ -76,3 +81,18 @@
     </form>
 </div>
 </body>
+<script>
+    $('#id_select_all').click(function(event) {
+    if(this.checked) {
+        // Iterate each checkbox
+        $(':checkbox').each(function() {
+            this.checked = true;
+        });
+    }
+        else{
+        $(':checkbox').each(function() {
+            this.checked = false;
+        });
+    }
+});
+</script>

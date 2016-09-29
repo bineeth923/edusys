@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
     <link rel="stylesheet" href="{% static "attendance/teacher_test_add.css" %}">
-
+    <link rel="stylesheet" href="{% static "attendance/teacher_test_select.css" %}">
 </head>
+
 
 
 <body>
@@ -26,7 +27,7 @@
                     </div>
             </div>
         </div>
-    </div>
+</div>
 <nav class="navbar navbar-default sidebar" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -57,19 +58,18 @@
     <form class="form-horizontal" action="{% url 'teacher_test_edit' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label class="control-label   col-sm-2" for="id_test" >Test name:</label>
-          <div class=" form-control">
+            <label class="control-label  col-sm-2" for="id_test" >Test name:</label>
               <select name="test">
                   {% for test in test_names %}
-                      <option value="{{ test.id }}">{{ test.name }}</option>
+                      <option value="{{ test }}">{{ test }}</option>
                   {% endfor %}
               </select>
-          </div>
+        <input type="checkbox" >
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-4">
                 <button type="submit" class="btn btn-default" name="select" value="Add" >Edit Test Details</button>
-                <button type="submit" class=" col-sm-offset-1 btn btn-default" name="delete" value="Add" >Delete Test </button>
+                <button type="submit" class=" col-sm-offset-1 btn btn-default" name="delete" id="delete" value="Add" >Delete Test </button>
             </div>
         </div>
     </form>
