@@ -321,7 +321,7 @@ def teacher_subject_edit(request):
                 continue
             subject.name = request.POST[string + 'name']
             subject.save()
-        return HttpResponseRedirect(reverse('teacher_subject_edit')+"?=status=success")
+        return HttpResponseRedirect(reverse('teacher_subject_edit') + "?=status=success")
     else:
         '''Form
         * List of all subjects
@@ -436,7 +436,7 @@ def teacher_test_edit(request):
                 for mark in marks:
                     mark.marks = request.POST[str(mark.id)]
                     mark.save()
-        return HttpResponseRedirect(reverse('teacher_test_select')+'?status=success')
+        return HttpResponseRedirect(reverse('teacher_test_select') + '?status=success')
     else:
         '''
         Form:
@@ -459,20 +459,22 @@ def teacher_report_view_single(request):
         * Get range of date
         return web page with required content
         '''
-        student = Student.objects.get(pk=int(request.POST['subject']))
+        student = Student.objects.get(pk=int(request.POST['student']))
         from_date = parse_date(request.POST['from_date'])
         to_date = parse_date(request.POST['to_date'])
         attendance = get_attendance_report_from_to(student, from_date, to_date)
-        mark_report_list = []
-        for subject in Subject.objects.filter(which_class=student.which_class):
-            test_list = mark_report_subject(student, subject)
-            report = {'test_list': test_list, 'subject': subject}
-            mark_report_list.append(report)
+        test_names = [test.name for test in
+                      Test.objects.filter(subject__which_class__teacher__user=request.user).order_by('date').distinct(
+                          'name')]
+        mark_list = []
+        for test_name in test_names:
+            marks = Marks.objects.filter(student=student, test__name=test_name).order_by('test__subject__name')
+            mark_list.append(marks)
         context['student'] = student
         context['from_date'] = from_date
         context['to_date'] = to_date
         context['attendance'] = attendance
-        context['mark_list'] = mark_report_list
+        context['mark_list'] = mark_list
         '''
         !--- Context details ---!
         * student
@@ -480,10 +482,8 @@ def teacher_report_view_single(request):
         * to_date
         * attendance :
             > Dictionary with keys : present, absent, total, percentage_present
-        * mark_list list of dictionary
-            with keys : test_list, subject
-            > test_list : list of dictionary with keys : test_name,date,subject,marks,total_marks
-            > subject
+        * mark_list list of list
+            > the inner list contains the
         '''
         # TODO return render(request,'<template>', context)
     else:
@@ -501,31 +501,31 @@ def teacher_report_class(request):
     context = get_error_context(request)
     if request.method == "POST":
         '''Task
-        * Get Subject List
-        * Get From and To Date
+        * Get Subject
         return table with the data
         '''
         subject = Subject.objects.get(pk=int(request.POST['subject']))
-        student_list = Student.objects.filter(which_class__teacher__user=request.user)
-        report_list = []
+        student_list = Student.objects.filter(which_class__teacher__user=request.user).order_by('roll_no')
+        test_list = Test.objects.filter(subject=subject).order_by('date')
+        mark_list = []
+        attendance_list = []
         for student in student_list:
-            test_list = mark_report_subject(student, subject)
-            attendance = get_attendance_complete(student)
-            report = {'test_list': test_list, 'student': student, 'attendance': attendance}
-            report_list.append(report)
+            attendance_list.append(get_attendance_complete(student))
+            student_marks = []
+            for test in test_list:
+                mark = Marks.objects.get(test=test, student=student)
+                student_marks.append(mark)
+            mark_list.append(student_marks)
         context['subject'] = subject
-        context['report_list'] = report_list
+        context['mark_list'] = mark_list
+        context['attendance_list'] = attendance_list
         '''
         !--- Context details ---!
-        * report_list :
-            > list of reports:
-            each report contains:
-            * test_list in key 'test_list'
-                the test_list is further a list of dictionaries.
-                the keys in the dictionary are : test_name,date,subject,marks,total_marks
-            * student in key 'student'
-            * attendance in key 'attendance'
-                Dictionary with keys: present, absent, total, percentage_present
+        * subject : subject whose marks being viewed
+        * mark_list: list of list
+            > one row contains marks of one student in all test of the subject
+        * attendance_list: list of attendance of students, dictionary
+            > keys: present, absent, total, percentage_present
         '''
         # TODO return render(request, '<template>', context)
     else:
@@ -553,7 +553,7 @@ def teacher_attendance_today(request):
             attendance.date = timezone.now().date()
             attendance.save()
         # return redirect
-        return HttpResponseRedirect(reverse('teacher_teacher_attendance_today'))
+        return HttpResponseRedirect(reverse('teacher_teacher_attendance'))
     else:
         ''' Task
         Check if attendance for today already taken,
@@ -608,8 +608,6 @@ def teacher_attendance_edit(request):
         '''
         context = get_error_context(request)
         # TODO return render(request, <template>, context)
-
-    return None
 
 
 ########################################################################################################################
