@@ -1,0 +1,44 @@
+.container{
+    overflow-x: auto;
+    position: absolute;
+}
+
+.btn-default{
+    width : 40%;
+
+}
+input[type="checkbox"]{
+cursor: pointer;
+-webkit-appearance: none;
+background: #34495E;
+position: relative;
+box-sizing: content-box ;
+width: 20px;
+height: 20px;
+border-width: 0;
+border-radius: 25%;
+transition: all .3s linear;
+}
+input[type="checkbox"]:checked{
+  background-color: #2ECC71;
+}
+input[type="checkbox"]:focus{
+  outline: 0 none;
+  box-shadow: none;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}

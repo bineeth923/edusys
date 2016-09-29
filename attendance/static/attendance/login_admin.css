@@ -37,7 +37,7 @@ a.dropdown-toggle{
     cursor: hand;
     z-index: 1000;
     opacity: 0;
-    transition: opacity 1s ease-out;
+    transition: opacity .35s ease-out;
 
 
 }
@@ -218,4 +218,16 @@ However, delay the fade out process for 2.5 seconds */
 @keyframes fadeout {
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
+}
+@media (min-width: 800px){
+    #admin_logout{
+        position:absolute;
+        display: inline-block;
+    }
+    #admin_login:hover #admin_logout {
+        margin-top: 1.5em;
+        display: block;
+        opacity: 1;
+
+    }
 }
