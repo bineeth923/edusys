@@ -356,7 +356,7 @@ def teacher_test_add(request):  # TODO
                     mark.test = test
                     mark.marks = int(marks)
                     mark.save()
-                    HttpResponseRedirect(reverse('teacher_test_add') + '?status=success')
+            return HttpResponseRedirect(reverse('teacher_test_add') + '?status=success')
 
         except KeyError:
             raise Exception("keyerr")

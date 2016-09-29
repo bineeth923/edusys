@@ -53,7 +53,7 @@
 
 <div class="container col-sm-offset-2 col-sm-9">
     <h2>Enter the details of Exam and the marks of students</h2>
-    <button class="btn btn-inverse" onclick="{% url 'teacher_subject_add' %}">Add Subjects</button>
+    <button class="btn btn-inverse" onclick="location.href='{% url 'teacher_subject_add' %}'">Add Subjects</button>
     <form class="form-horizontal" action="{% url 'teacher_test_add' %}" method="post">
             {% csrf_token %}
         <div class="form-group">
@@ -90,7 +90,7 @@
                     <td>{{ student.user.username }}</td>
                     <td>{{ student.roll_no }}</td>
                     {% for subject in subject_list %}
-                        <td><input type="number" value="{{ subject.name }}" name="mark_{{ student.roll_no }}"></td>
+                        <td><input type="number" value="{{ subject.name }}" name="{{ subject.id }}_{{ student.roll_no }}"></td>
                     {% endfor %}
                 </tr>
             {% endfor %}

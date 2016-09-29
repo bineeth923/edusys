@@ -133,7 +133,6 @@ def get_attendance_report_from_to(student, from_date, to_date):
             present += 1
         else:
             absent += 1
-        total += 1
     percentage_present = (float(present) / total) * 100
     return {
         'present': present,
@@ -157,7 +156,6 @@ def get_attendance_complete(student):
             present += 1
         else:
             absent += 1
-        total += 1
     percentage_present = (float(present) / total) * 100
     return {
         'present': present,
