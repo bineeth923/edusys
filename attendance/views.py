@@ -455,7 +455,6 @@ def teacher_report_view_single(request):
     context = get_error_context(request)
     if request.method == "POST":
         '''Task
-        * Get subject list from form
         * Get student from form
         * Get range of date
         return web page with required content
@@ -493,6 +492,8 @@ def teacher_report_view_single(request):
         * From date
         * To date
         '''
+        context['student_list'] = Student.objects.filter(which_class__teacher__user=request.user)
+        # TODO return render()
 
 
 @teacher_login_required
@@ -586,9 +587,19 @@ def teacher_attendance_today(request):
 
 
 def teacher_attendance_edit(request):
+    context = get_error_context(request)
     if request.method == 'POST':
-
-        pass
+        date = parse_date(request.POST['date'])
+        attendance_list = Attendance.objects.filter(date=date,
+                                                    student__which_class__teacher__user=request.user).order_by(
+            'student__roll_no')
+        if 'edit' in request.POST:
+            context['attendance_list'] = attendance_list
+            # TODO request render(request, <template>, context)
+        elif 'delete' in request.POST:
+            attendance_list.delete()
+        else:
+            pass
     else:
         '''
         Form
@@ -607,7 +618,7 @@ def teacher_attendance_edit(request):
 
 '''
 Views :
-* Index - > show average attendence , average marks per subject, over all average marks, link to other views
+* Index - > show average attendance , average marks per subject, over all average marks, link to other views
 * Check attendance at date -> form
 * Check Test result
 * Check Subject Tests
