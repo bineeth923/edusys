@@ -58,19 +58,32 @@
     <form class="form-horizontal" action="{% url 'teacher_test_edit' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label class="control-label  col-sm-2" for="id_test" >Test name:</label>
-              <select name="test">
-                  {% for test in test_names %}
-                      <option value="{{ test }}">{{ test }}</option>
-                  {% endfor %}
-              </select>
-        <input type="checkbox" >
+            <table>
+               <tr>
+                   <th>Exam name</th>
+                   <th>Select</th>
+                   <th>Delete</th>
+               </tr>
+               {% for test in test_names %}
+               <tr>
+                   <td><input type="text" name="test" value="{{ test }}" class="form-control" readonly> </td>
+                    <td><input type="checkbox" value="{{ test }}" class="selectone" name="select"></td>
+                    <td><input type="checkbox" value="{{ test }}" class="selectone" name="delete" ></td>
+               </tr>
+               {% endfor %}
+            </table>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-4">
-                <button type="submit" class="btn btn-default" name="select" value="Add" >Edit Test Details</button>
-                <button type="submit" class=" col-sm-offset-1 btn btn-default" name="delete" id="delete" value="Add" >Delete Test </button>
+            <div class=" col-sm-4">
+                <button type="submit" class="btn btn-default" name="submit" value="Add">Submit</button>
             </div>
         </div>
     </form>
 </div>
+
+</body>
+<script>
+    $('input.selectone').on('change', function() {
+    $('input.selectone').not(this).prop('checked', false);
+});
+</script>

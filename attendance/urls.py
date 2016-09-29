@@ -31,14 +31,14 @@ urlpatterns = [
     url(r'^teacher/test/select', views.teacher_test_edit, name="teacher_test_select"),
 
     # TODO test remove
-    url(r'teacher/attendance', views.teacher_attendance_today, name="teacher_attendance")
+    url(r'teacher/attendance', views.teacher_attendance_today, name="teacher_attendance"),
     # TODO attendance
         # TODO edit attendace
         # TODO remove attendance
     # TODO report
         # TODO Individual
         # TODO Class
-    ################### Student #########################################
+
 
     url(r'teacher/report/student', views.teacher_report_view_single, name="teacher_report_single"),
     url(r'teacher/report/class', views.teacher_report_class, name="teacher_report_class"),

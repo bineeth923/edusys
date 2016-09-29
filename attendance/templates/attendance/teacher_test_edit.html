@@ -1,0 +1,85 @@
+ <head>
+     {% load static %}
+     <title>Welcome Teacher</title>
+     <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+       <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
+    <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
+    <link rel="stylesheet" href="{% static "attendance/teacher_test_select.css" %}">
+    <link rel="stylesheet" href="{% static "attendance/teacher_student_edit.css" %}">
+
+</head>
+
+
+<body>
+<div class="navbar navbar-inverse">
+        <div class="">
+            <div class="navbar-header" role="navigation" >
+                <a class="navbar-brand" id="Brand">Shift2Cloud</a>
+            </div>
+            <div id="admin_login">
+                    <p>Welcome Teacher</p>
+                    <div id="admin_logout">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-default sidebar" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+        <span class="sr-only" >Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                <img src="{% static "attendance/img/logo.gif" %}">
+                <ul class="nav navbar-nav">
+                    <li ><a href="{% url 'teacher_attendance' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_student_remove' %}"> Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+
+
+<div class="container col-sm-offset-3 col-sm-9">
+    <h2>Edit the marks of the students</h2>
+    <form class="form-horizontal" action="{% url 'teacher_test_add' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_exam_name">Exam Name:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_exam_name" maxlength="50" value="{{ test_list.name }}"  name="test_name"placeholder="Enter exam name" required readonly >
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>Name</th>
+                {% for test in test_list %}
+                    <th>{{ test.subject.name }}</th>
+                {% endfor %}
+            </tr>
+                {% for marks in mark_list %}
+                    {% for mark in marks %}
+                    <tr>
+                        <td>{{ mark.student.roll_no }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+        </table>
+    </form>
+</div>
+</body>

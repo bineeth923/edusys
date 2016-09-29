@@ -46,7 +46,7 @@
                     <li><a href="{% url 'teacher_student_remove' %}"> Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_test_edit' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                 </ul>
             </div>
         </div>
@@ -64,7 +64,7 @@
            </tr>
            {% for subject in subject_list %}
            <tr>
-                   <td><input type="text" name="{{ subject.id }}_name" value="{{ subject.name }}" class="form-control" placeholder="Enter subject name"> </td>
+                   <td><input type="text" name="{{ subject.id }}_name" value="{{ subject.name }}" class="form-control" readonly placeholder="Enter subject name"> </td>
                    <td><input type="checkbox" name="{{ subject.id }}_delete" > </td>
            </tr>
            {% endfor %}
