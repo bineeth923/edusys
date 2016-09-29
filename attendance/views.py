@@ -1,10 +1,7 @@
-from difflib import context_diff
-
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 from django.urls import reverse
@@ -13,7 +10,7 @@ from django.utils.dateparse import parse_date
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
-from attendance.models import Class, Teacher, Student, Subject, Attendance
+from attendance.models import Class, Teacher, Student, Subject
 from attendance.helper import *
 
 
@@ -311,15 +308,33 @@ def teacher_subject_add(request):
         return render(request,'attendance/teacher_subject_add.html', context)
 
 
-def techer_subject_edit(request):
+def teacher_subject_edit(request):
+    """
+    To edit and delete subjects in class
+    """
     context = get_error_context(request)
+    subject_list = Subject.objects.filter(which_class__teacher__user=request.user)
     if request.method == "POST":
-        pass
+        for subject in subject_list:
+            string = str(subject.id) + "_"
+            if string+'delete' in request.POST:
+                subject.delete()
+                continue
+            subject.name = request.POST[string+'name']
+            subject.save()
+        # TODO return HttpResponseRedirect(reverse()+"?=status=success")
     else:
         '''Form
-        *
+        * List of all subjects
+            * Subject name textbox
+            * checkbox to delete it
+
+            naming convension:
+            <subject.id>_name
+            <subject.id>_delete
         '''
-        pass
+        context['subject_list'] = subject_list
+        # TODO return render(request, <template>, context)
 
 
 @teacher_login_required
@@ -356,7 +371,7 @@ def teacher_test_add(request):  # TODO
                     mark.test = test
                     mark.marks = int(marks)
                     mark.save()
-            return HttpResponseRedirect(reverse('teacher_test_add') + '?status=success')
+            return HttpResponseRedirect(reverse('teacher_test_add')+'?status=success')
 
         except KeyError:
             raise Exception("keyerr")
@@ -385,7 +400,35 @@ def teacher_test_add(request):  # TODO
 def teacher_test_edit(request):
     context = {}
     if request.method == "POST":
-        test_id = request.POST['test']
+        test_name = request.POST['test']
+        test_list = Test.objects.filter(name=test_name)
+        if 'select' in request.POST:
+            context['test_list'] = test_list
+            mark_list = []
+            for test in test_list:
+                marks = Marks.objects.filter(test=test)
+                mark_list.append(marks)
+            context['mark_list'] = mark_list
+            # TODO return render(request, <template>, context)
+        elif 'delete' in request.POST:
+            Test.objects.filter(name=test_name).delete()
+        else:
+            for test in test_list:
+                marks = Marks.objects.filter(test=test)
+                for mark in marks:
+                    mark.marks = request.POST[str(mark.id)]
+                    mark.save()
+        # TODO return HttpResponseRedirect(reverse()+'?status=success')
+    else:
+        '''
+        Form:
+        * List of all exams:
+        * select option - edit, delete
+        '''
+        test_names = [ test.name for test in Test.objects.filter(subject__which_class__teacher__user=request.user)]
+        test_names = set(test_names)
+        context['test_names'] = test_names
+        # TODO return render(request, <template>, context)
 
 
 @teacher_login_required
@@ -428,7 +471,6 @@ def teacher_report_view_single(request):
     else:
         '''Form Description
         * Student name
-        * Subject List containing all subjects of that class
         * From date
         * To date
         '''
@@ -524,46 +566,6 @@ def teacher_attendance_today(request):
         return render(request, 'attendance/teacher_attendance.html', context)
         # attendance, student_list
 
-
-################# Unwanted #############################################################
-
-@teacher_login_required
-def teacher_attendance_report_single(request):
-    student_list = Student.objects.filter(which_class__teacher__user=request.user)
-    if request.method == "POST":
-        '''Task
-        Get the following data:
-        * Student name
-        * Date range -> From date and To date
-        return The attendance details of the student
-        '''
-        student_roll = request.POST['student_roll']
-        student = student_list.get(roll_no=student_roll)
-        report = get_attendance_report_from_to(student, request.POST['from'], request.POST['to'])
-        # TODO return report, student, from_date, to_date to template
-    else:
-        '''Form
-        * Student
-        * From date
-        * To date
-        '''
-        # TODO return student_list
-
-
-@teacher_login_required
-def teacher_attendance_report_class(request):
-    if request.method == "POST":
-        '''Task
-        * Get Range of date
-        return attendance register
-        '''
-    else:
-        '''Form
-        * Range of date
-        '''
-
-
-##########################################################################################
 
 ########################################################################################################################
 #                                               Student Controller                                                     #
