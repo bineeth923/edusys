@@ -55,7 +55,7 @@
 
 <div class="container col-sm-offset-2 col-sm-9">
     <h2>Select the test </h2>
-    <form class="form-horizontal" action="{% url 'teacher_test_edit' %}" method="post">
+    <form class="form-horizontal" action="{% url 'teacher_test_select' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <table>
@@ -67,7 +67,7 @@
                {% for test in test_names %}
                <tr>
                    <td><input type="text" name="test" value="{{ test }}" class="form-control" readonly> </td>
-                    <td><input type="checkbox" value="{{ test }}" class="selectone" name="select"></td>
+                    <td><input type="checkbox" value="{{ test }}" class="selectone" name="edit"></td>
                     <td><input type="checkbox" value="{{ test }}" class="selectone" name="delete" ></td>
                </tr>
                {% endfor %}
@@ -75,7 +75,11 @@
         </div>
         <div class="form-group">
             <div class=" col-sm-4">
-                <button type="submit" class="btn btn-default" name="submit" value="Add">Submit</button>
+                {% if test_names %}
+                    <button type="submit" class="btn btn-default" name="submit" value="Add">Submit</button>
+                    {% else %}
+                    <h3>No Tests are present yet. Click here to add test <a href="{% url 'teacher_test_add' %}"><button class="btn btn-default"></button></buttob></a></h3>
+                {% endif %}
             </div>
         </div>
     </form>
@@ -86,4 +90,5 @@
     $('input.selectone').on('change', function() {
     $('input.selectone').not(this).prop('checked', false);
 });
+
 </script>

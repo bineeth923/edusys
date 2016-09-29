@@ -55,29 +55,39 @@
     </nav>
 
 
-<div class="container col-sm-offset-3 col-sm-9">
+<div class="container col-sm-offset-2 col-sm-9">
     <h2>Edit the marks of the students</h2>
-    <form class="form-horizontal" action="{% url 'teacher_test_add' %}" method="post">
+    <form class="form-horizontal" action="{% url 'teacher_test_select' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <label class="control-label   col-sm-2" for="id_exam_name">Exam Name:</label>
           <div class="col-sm-7">
-            <input type="text" class="form-control" id="id_exam_name" maxlength="50" value="{{ test_list.name }}"  name="test_name"placeholder="Enter exam name" required readonly >
+            <input type="text" class="form-control" id="id_exam_name" maxlength="50" value="{{ test_list.0.name }}"  name="test_name" placeholder="Exam name" required readonly >
+          </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_total_marks">Total marks:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_exam_name" max="9999" value="{{ test_list.0.total_marks }}"  name="total_marks" placeholder="Total marks" required readonly >
           </div>
         </div>
         <table>
             <tr>
+                <th>Roll no</th>
                 <th>Name</th>
                 {% for test in test_list %}
                     <th>{{ test.subject.name }}</th>
                 {% endfor %}
             </tr>
                 {% for marks in mark_list %}
-                    {% for mark in marks %}
                     <tr>
-                        <td>{{ mark.student.roll_no }}</td>
+                        <td>{{ marks.0.student.roll_no }}</td>
+                        <td>{{ marks.0.student.user.username }}</td>
+                        {% for mark in marks %}
+
+                            <td>{{ mark.marks }}</td>
+                        {% endfor %}
                     </tr>
-                    {% endfor %}
                 {% endfor %}
         </table>
     </form>

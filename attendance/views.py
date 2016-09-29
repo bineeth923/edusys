@@ -436,13 +436,13 @@ def teacher_test_edit(request):
                 for mark in marks:
                     mark.marks = request.POST[str(mark.id)]
                     mark.save()
-        return HttpResponseRedirect(reverse('teacher_test_edit')+'?status=success')
+        return HttpResponseRedirect(reverse('teacher_test_select')+'?status=success')
     else:
         '''
         Form:
         * List of all exams:
         * list of test by name
-        * 2 checkbox by name select and delete
+        * 2 checkbox by name edit and delete
         '''
         test_names = [test.name for test in Test.objects.filter(subject__which_class__teacher__user=request.user)]
         test_names = set(test_names)
