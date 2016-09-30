@@ -154,7 +154,10 @@ def get_attendance_complete(student):
             present += 1
         else:
             absent += 1
-    percentage_present = (float(present) / total) * 100
+    try:
+        percentage_present = (float(present) / total) * 100
+    except ZeroDivisionError:
+        percentage_present = 0.0
     return {
         'present': present,
         'absent': absent,
