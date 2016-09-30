@@ -568,8 +568,7 @@ def teacher_attendance_today(request):
         for each student in class
         * Student name as label, checkbox to determine present or not
         '''
-        attendance = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
-            date=timezone.now().date()).order_by('student__roll_no')
+
         context = get_error_context(request)
         if attendance.count() != 0:
             present = 0
@@ -596,35 +595,21 @@ def teacher_attendance_today(request):
 
 def teacher_attendance_edit(request):
     context = get_error_context(request)
+    attendance_list = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
+        date=timezone.now().date()).order_by('student__roll_no')
     if request.method == 'POST':
-        date = parse_date(request.POST['date'])
-        attendance_list = Attendance.objects.filter(date=date,
-                                                    student__in=Student.objects.filter(
-                                                        which_class__teacher__user=request.user)).order_by(
-            'student__roll_no')
-        if 'edit' in request.POST:
-            '''Form details
-            * List of student
-            * checkbox to see if they present : name - <student.id>
-            '''
-            context['attendance_list'] = attendance_list
-            # TODO request render(request, <template>, context)
-        elif 'delete' in request.POST:
-            attendance_list.delete()
-        else:
-            for attendance in attendance_list:
-                if attendance.student.id in request.POST:
-                    attendance.is_present = True
-                else:
-                    attendance.is_present = False
-                    # TODO return HttpResponseRedirect(reverse() + "?status=success")
+        for attendance in attendance_list:
+            if attendance.student.id in request.POST:
+                attendance.is_present = True
+            else:
+                attendance.is_present = False
+                # TODO return HttpResponseRedirect(reverse() + "?status=success")
     else:
+        '''Form details
+        * List of student
+        * checkbox to see if they present : name - <student.id>
         '''
-        Form
-        * Date -> name : date
-        * 2 checkbox : edit, delete
-        '''
-        context = get_error_context(request)
+        context['attendance_list'] = attendance_list
         # TODO return render(request, <template>, context)
 
 
