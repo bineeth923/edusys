@@ -9,6 +9,7 @@ html {
 div.navbar.navbar-inverse{
     margin-bottom: 0;
     z-index: 999;
+
 }
 a.dropdown-toggle{
     margin-right: 25px;

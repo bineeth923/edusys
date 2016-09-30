@@ -493,7 +493,7 @@ def teacher_report_view_single(request):
         * To date
         '''
         context['student_list'] = Student.objects.filter(which_class__teacher__user=request.user)
-        # TODO return render()
+        return render(request, 'attendance/teacher_report_single.html',context)
 
 
 @teacher_login_required
@@ -553,7 +553,7 @@ def teacher_attendance_today(request):
             attendance.date = timezone.now().date()
             attendance.save()
         # return redirect
-        return HttpResponseRedirect(reverse('teacher_teacher_attendance'))
+        return HttpResponseRedirect(reverse('teacher_attendance_today'))
     else:
         ''' Task
         Check if attendance for today already taken,
@@ -574,7 +574,10 @@ def teacher_attendance_today(request):
                     present += 1
                 else:
                     absent += 1
-            percentage = float(present) / attendance.count() * 100
+            try:
+                percentage = float(present) / attendance.count() * 100
+            except ZeroDivisionError:
+                percentage=0
             context['absent'] = absent
             context['present'] = present
             context['total'] = attendance.count()

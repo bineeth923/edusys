@@ -131,7 +131,10 @@ def get_attendance_report_from_to(student, from_date, to_date):
             present += 1
         else:
             absent += 1
-    percentage_present = (float(present) / total) * 100
+    try:
+        percentage_present = (float(present) / total) * 100
+    except ZeroDivisionError:
+        percentage_present = 0
     return {
         'present': present,
         'absent': absent,

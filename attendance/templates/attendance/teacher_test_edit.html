@@ -41,12 +41,14 @@
             <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
                 <img src="{% static "attendance/img/logo.gif" %}">
                 <ul class="nav navbar-nav">
-                    <li ><a href="{% url 'teacher_attendance' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li ><a href="{% url 'teacher_attendance_today' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_remove' %}"> Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_report_single' %}">Report View Single<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_report_class' %}">Report View Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
 
                 </ul>
             </div>

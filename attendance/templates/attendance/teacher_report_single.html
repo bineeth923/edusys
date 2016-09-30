@@ -1,18 +1,20 @@
-<head>
+ <head>
      {% load static %}
-     <title>Today's Attendance</title>
+     <title>Welcome Teacher</title>
      <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "attendance/teacher_report_single.css" %}">
        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
+
 </head>
 
 
 <body>
-<!-- Main nav bar-->
 <div class="navbar navbar-inverse">
         <div class="">
             <div class="navbar-header" role="navigation" >
@@ -47,22 +49,44 @@
                     <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_report_single' %}">Report View Single<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_report_class' %}">Report View Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-
                 </ul>
             </div>
         </div>
 
     </nav>
-<!-- Nav bar ends -->
 
-<div class="container">
-    <h2>Todays attendance has already being taken..</h2>
-    <button class="btn btn-sucess" name="Edit_Attendance" id="id_Edit_Attendance" > Edit Attendance</button>
-    <div class="inner_container">
-        <h3>No of students present : {{ present }}</h3>
-        <h3>No of students absent : {{ absent }}</h3>
-        <h3>Total attendance count : {{ total }}</h3>
-        <h3>Percentage : {{ percentage }}</h3>
+<div class="container col-sm-offset-2 col-sm-7">
+    <h2>Select the student you want to view report:</h2>
+    <form class="form-horizontal" action="{% url 'teacher_report_single' %}" method="post">
+        {% csrf_token %}
+
+    <div id="students">
+        <input class="search" placeholder="Search Students">
+        <button class="sort" data-sort="name">Sort by alphabetcal order</button>
+
+        <ul class="list">
+            {% for student in student_list %}
+                    <label for="{{ student.id }}">
+                        <input type="radio" name="student" value="{{ student.id }}" id="{{ student.id }}">{{ student.user.username }}
+                <br clear="both">
+            {% endfor %}
+        </ul>
     </div>
+    <input type="date" name="from_date" >
+    <input type="date" name="to_date">
+    <div class="form-group">
+          <div class="col-sm-offset-4 col-sm-6">
+            <center><button type="submit" class="btn btn-default" value="Add" >Sumbit</button></center>
+          </div>
+
+        </div>
+        </form>
 </div>
 </body>
+<script>
+    var options = {
+  valueNames: [ 'name','roll_no' ]
+};
+
+var userList = new List('students', options);
+</script>
