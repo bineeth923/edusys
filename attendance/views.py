@@ -492,7 +492,7 @@ def teacher_report_view_single(request):
             > the inner list contains the
         '''
 
-        return render(request,'attendance/teacher_report_single_view.html', context)
+        return render(request, 'attendance/teacher_report_single_view.html', context)
     else:
         '''Form Description
         * Student name
@@ -500,7 +500,7 @@ def teacher_report_view_single(request):
         * To date
         '''
         context['student_list'] = Student.objects.filter(which_class__teacher__user=request.user)
-        return render(request, 'attendance/teacher_report_single.html',context)
+        return render(request, 'attendance/teacher_report_single.html', context)
 
 
 @teacher_login_required
@@ -526,7 +526,7 @@ def teacher_report_class(request):
         context['subject'] = subject
         context['mark_list'] = mark_list
         context['attendance_list'] = attendance_list
-        context['data_list'] = zip(attendance_list,mark_list)
+        context['data_list'] = zip(attendance_list, mark_list)
         '''
         !--- Context details ---!
         * subject : subject whose marks being viewed
@@ -541,7 +541,7 @@ def teacher_report_class(request):
         * Subject List (subject)
         '''
         context['subject_list'] = Subject.objects.filter(which_class__teacher__user=request.user)
-        return render(request,'attendance/teacher_report_class.html', context)
+        return render(request, 'attendance/teacher_report_class.html', context)
 
 
 @teacher_login_required
@@ -600,11 +600,8 @@ def teacher_attendance_today(request):
 def teacher_attendance_edit(request):
     context = get_error_context(request)
     if request.method == 'POST':
-        date = parse_date(request.POST['date'])
-        attendance_list = Attendance.objects.filter(date=date,
-                                                    student__in=Student.objects.filter(
-                                                        which_class__teacher__user=request.user)).order_by(
-            'student__roll_no')
+        attendance_list = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
+            date=timezone.now().date()).order_by('student__roll_no')
         if 'edit' in request.POST:
             '''Form details
             * List of student
