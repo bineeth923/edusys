@@ -599,35 +599,22 @@ def teacher_attendance_today(request):
 
 def teacher_attendance_edit(request):
     context = get_error_context(request)
+    attendance_list = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
+        date=timezone.now().date()).order_by('student__roll_no')
     if request.method == 'POST':
-        attendance_list = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
-            date=timezone.now().date()).order_by('student__roll_no')
-        if 'edit' in request.POST:
-            '''Form details
-            * List of student
-            * checkbox to see if they present : name - <student.id>
-            '''
-            context['attendance_list'] = attendance_list
-            render(request, 'attendance/teacher_attendance_edit_student.html', context)
-        elif 'delete' in request.POST:
-            print(attendance_list)
-            attendance_list.delete()
-
-        else:
-            for attendance in attendance_list:
-                if attendance.student.id in request.POST:
-                    attendance.is_present = True
-                else:
-                    attendance.is_present = False
-        return HttpResponseRedirect(reverse('teacher_attendance_today') + "?status=success")
+        for attendance in attendance_list:
+            if attendance.student.id in request.POST:
+                attendance.is_present = True
+            else:
+                attendance.is_present = False
+                # TODO return HttpResponseRedirect(reverse() + "?status=success")
     else:
+        '''Form details
+        * List of student
+        * checkbox to see if they present : name - <student.id>
         '''
-        Form
-        * Date -> name : date
-        * 2 checkbox : edit, delete
-        '''
-        context = get_error_context(request)
-        return render(request, 'attendance/teacher_edit_attendance.html', context)
+        context['attendance_list'] = attendance_list
+        # TODO return render(request, <template>, context)
 
 
 ########################################################################################################################
