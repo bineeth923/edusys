@@ -480,6 +480,7 @@ def teacher_report_view_single(request):
         context['to_date'] = to_date
         context['attendance'] = attendance
         context['mark_list'] = mark_list
+        context['subject_list'] = Subject.objects.filter(which_class__teacher__user=request.user)
         '''
         !--- Context details ---!
         * student
@@ -490,7 +491,8 @@ def teacher_report_view_single(request):
         * mark_list list of list
             > the inner list contains the
         '''
-        # TODO return render(request,'<template>', context)
+
+        return render(request,'attendance/teacher_report_single_view.html', context)
     else:
         '''Form Description
         * Student name
@@ -524,6 +526,7 @@ def teacher_report_class(request):
         context['subject'] = subject
         context['mark_list'] = mark_list
         context['attendance_list'] = attendance_list
+        context['data_list'] = zip(attendance_list,mark_list)
         '''
         !--- Context details ---!
         * subject : subject whose marks being viewed
@@ -532,13 +535,13 @@ def teacher_report_class(request):
         * attendance_list: list of attendance of students, dictionary
             > keys: present, absent, total, percentage_present
         '''
-        # TODO return render(request, '<template>', context)
+        return render(request, 'attendance/teacher_report_class_view.html', context)
     else:
         '''Form
         * Subject List (subject)
         '''
         context['subject_list'] = Subject.objects.filter(which_class__teacher__user=request.user)
-        # TODO return render(request,'<template>', context)
+        return render(request,'attendance/teacher_report_class.html', context)
 
 
 @teacher_login_required
@@ -607,16 +610,18 @@ def teacher_attendance_edit(request):
             * checkbox to see if they present : name - <student.id>
             '''
             context['attendance_list'] = attendance_list
-            # TODO request render(request, <template>, context)
+            render(request, 'attendance/teacher_attendance_edit_student.html', context)
         elif 'delete' in request.POST:
+            print(attendance_list)
             attendance_list.delete()
+
         else:
             for attendance in attendance_list:
                 if attendance.student.id in request.POST:
                     attendance.is_present = True
                 else:
                     attendance.is_present = False
-                    # TODO return HttpResponseRedirect(reverse() + "?status=success")
+        return HttpResponseRedirect(reverse('teacher_attendance_today') + "?status=success")
     else:
         '''
         Form
@@ -624,7 +629,7 @@ def teacher_attendance_edit(request):
         * 2 checkbox : edit, delete
         '''
         context = get_error_context(request)
-        # TODO return render(request, <template>, context)
+        return render(request, 'attendance/teacher_edit_attendance.html', context)
 
 
 ########################################################################################################################

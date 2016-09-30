@@ -57,7 +57,7 @@
 
 <div class="container">
     <h2>Todays attendance has already being taken..</h2>
-    <button class="btn btn-sucess" name="Edit_Attendance" id="id_Edit_Attendance" > Edit Attendance</button>
+    <button class="btn btn-sucess" name="Edit_Attendance" id="id_Edit_Attendance" onclick="location.href='{% url 'teacher_attendance_edit' %}'"> Edit Attendance</button>
     <div class="inner_container">
         <h3>No of students present : {{ present }}</h3>
         <h3>No of students absent : {{ absent }}</h3>

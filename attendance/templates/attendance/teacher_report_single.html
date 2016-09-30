@@ -66,14 +66,14 @@
 
         <ul class="list">
             {% for student in student_list %}
-                    <label for="{{ student.id }}">
-                        <input type="radio" name="student" value="{{ student.id }}" id="{{ student.id }}">{{ student.user.username }}
-                <br clear="both">
+                    <input style="display: none;" type="radio" name="student" value="{{ student.id }}" id="{{ student.id }}">
+                    <label style="cursor: pointer" for="{{ student.id }}"><p id="{{ student.id }}"class="name" name="student">{{ student.user.username }}</p></label>
+                <br>
             {% endfor %}
         </ul>
     </div>
-    <input type="date" name="from_date" >
-    <input type="date" name="to_date">
+    <input type="date" name="from_date" placeholder="From date" >
+    <input type="date" name="to_date" placeholder=" To date">
     <div class="form-group">
           <div class="col-sm-offset-4 col-sm-6">
             <center><button type="submit" class="btn btn-default" value="Add" >Sumbit</button></center>
@@ -89,4 +89,10 @@
 };
 
 var userList = new List('students', options);
+
+    $(".name").click(function () {
+        $(".name").css('color','black');
+        $(this).css('color','red');
+        
+    })
 </script>

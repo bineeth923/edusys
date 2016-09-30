@@ -1,18 +1,19 @@
- <head>
-     {% load static %}
-     <title>Add Test/Exam</title>
+<head>
+    {% load static %}
+    <title>Welcome Teacher</title>
      <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{% static "attendance/teacher_report_single.css" %}">
        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
-    <link rel="stylesheet" href="{% static "attendance/teacher_test_add.css" %}">
-    <link rel="stylesheet" href="{% static "attendance/teacher_test_select.css" %}">
+    <link rel="stylesheet" href="{% static "attendance/teacher_report_class_view.css" %}">
+
 </head>
-
-
 
 <body>
 <div class="navbar navbar-inverse">
@@ -27,7 +28,7 @@
                     </div>
             </div>
         </div>
-</div>
+    </div>
 <nav class="navbar navbar-default sidebar" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -49,54 +50,43 @@
                     <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_report_single' %}">Report View Single<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_report_class' %}">Report View Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-
                 </ul>
             </div>
         </div>
 
     </nav>
+<div class="container  col-sm-8">
+    <form class="form-horizontal" action="{% url 'teacher_report_class' %}" method="post">
+            {% csrf_token %}
+        <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_subject_name">Subject name:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" value="{{ subject.name }}" id="id_subject_name" maxlength="50"  name="test_name"placeholder="Enter exam name" required readonly>
+          </div>
+        </div>
+    <h2>Marks in all exams of {{ subject.name }} </h2>
+        <table>
+            <tr>
+                <th>Student name</th>
+                <th>Percentage present</th>
+                {% for mark in mark_list.0 %}
+                    <th>{{ mark.test.name }}</th>
+                {% endfor %}
+ >
+            </tr>
 
-<div class="container col-sm-offset-2 col-sm-9">
-    <h2>Select the test </h2>
-    <form class="form-horizontal" action="{% url 'teacher_test_select' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <table>
-               <tr>
-                   <th>Exam name</th>
-                   <th>Select</th>
-                   <th>Delete</th>
-               </tr>
-               {% for test in test_names %}
-               <tr>
-                    <td><input type="text" id="{{ forloop.counter }}" name="test" value="{{ test }}" class="form-control" readonly></td>
-                    <td><input type="checkbox" id="{{ forloop.counter }}" value="{{ test }}" class="selectone" name="edit"></td>
-                    <td><input type="checkbox" value="{{ test }}" class="selectone" name="delete" ></td>
-               </tr>
-               {% endfor %}
-            </table>
-        </div>
-        <div class="form-group">
-            <div class=" col-sm-4">
-                {% if test_names %}
-                    <button type="submit" class="btn btn-default" name="submit" value="Add">Submit</button>
-                    {% else %}
-                    <h3>No Tests are present yet. Click here to add test <a href="{% url 'teacher_test_add' %}"><button class="btn btn-default"></button></buttob></a></h3>
-                {% endif %}
-            </div>
-        </div>
-    </form>
+                {% for attendance,marks in data_list %}
+                    <tr>
+                        <td>{{ marks.0.student.user.username }}</td>
+                        <td>{{ attendance.percentage_present }}</td>
+                        {% for mark in marks %}
+                            <td>{{ mark.marks }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+        </table>
+
+
+</form>
 </div>
-
 </body>
-<script>
-
-    $('input.selectone').on('change', function() {
-    $('input.selectone').not(this).prop('checked', false);
-});
-    $('input.selectone').click(function () {
-        var a = $(event.target)[0].id;
-        $("input text").find('#' + a).attr('name','test');
-    })
-
-</script>

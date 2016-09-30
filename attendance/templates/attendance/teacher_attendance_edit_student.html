@@ -1,6 +1,6 @@
  <head>
      {% load static %}
-     <title>Add Test/Exam</title>
+     <title>Today's Attendance</title>
      <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -8,13 +8,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
-    <link rel="stylesheet" href="{% static "attendance/teacher_test_add.css" %}">
-    <link rel="stylesheet" href="{% static "attendance/teacher_test_select.css" %}">
+    <link rel="stylesheet" href="{% static "attendance/teacher_attendance.css" %}">
 </head>
 
 
-
 <body>
+<!-- Main nav bar-->
 <div class="navbar navbar-inverse">
         <div class="">
             <div class="navbar-header" role="navigation" >
@@ -27,8 +26,8 @@
                     </div>
             </div>
         </div>
-</div>
-<nav class="navbar navbar-default sidebar" role="navigation">
+    </div>
+    <nav class="navbar navbar-default sidebar" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
@@ -55,48 +54,47 @@
         </div>
 
     </nav>
-
-<div class="container col-sm-offset-2 col-sm-9">
-    <h2>Select the test </h2>
-    <form class="form-horizontal" action="{% url 'teacher_test_select' %}" method="post">
+<!-- Nav bar ends -->
+<!--Attendance main view-->
+<div class="container">
+    <h2>Take today's attendance</h2>
+    <form action="{% url 'teacher_attendance_today' %}" method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <table>
-               <tr>
-                   <th>Exam name</th>
-                   <th>Select</th>
-                   <th>Delete</th>
-               </tr>
-               {% for test in test_names %}
-               <tr>
-                    <td><input type="text" id="{{ forloop.counter }}" name="test" value="{{ test }}" class="form-control" readonly></td>
-                    <td><input type="checkbox" id="{{ forloop.counter }}" value="{{ test }}" class="selectone" name="edit"></td>
-                    <td><input type="checkbox" value="{{ test }}" class="selectone" name="delete" ></td>
-               </tr>
-               {% endfor %}
-            </table>
+        <div  id="attendance_main">
+        <div class="attendance_header">
+            <div class="student_name"> <label style="font-weight: 500">Name</label></div>
+            <div class="student_check"> <label id="selectAll"><input type="checkbox" name="select_all" id="id_select_all"></label></div>
+        <hr id="header">
         </div>
-        <div class="form-group">
-            <div class=" col-sm-4">
-                {% if test_names %}
-                    <button type="submit" class="btn btn-default" name="submit" value="Add">Submit</button>
-                    {% else %}
-                    <h3>No Tests are present yet. Click here to add test <a href="{% url 'teacher_test_add' %}"><button class="btn btn-default"></button></buttob></a></h3>
-                {% endif %}
-            </div>
+            {% for student in student_list %}
+                <label for="id_student_{{ student.id }}" class="Student_details">
+                    <div class="student_name" id="id_student_{{ student.id }}">
+                        {{ student }}
+                    </div>
+                    <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check">
+                <hr>
+                </label>
+                <br clear="both">
+            {% endfor %}
         </div>
+        <button type="submit" class="btn btn-default" value="Add" >Submit</button>
+
+
     </form>
 </div>
-
 </body>
 <script>
-
-    $('input.selectone').on('change', function() {
-    $('input.selectone').not(this).prop('checked', false);
+    $('#id_select_all').click(function(event) {
+    if(this.checked) {
+        // Iterate each checkbox
+        $(':checkbox').each(function() {
+            this.checked = true;
+        });
+    }
+        else{
+        $(':checkbox').each(function() {
+            this.checked = false;
+        });
+    }
 });
-    $('input.selectone').click(function () {
-        var a = $(event.target)[0].id;
-        $("input text").find('#' + a).attr('name','test');
-    })
-
 </script>
