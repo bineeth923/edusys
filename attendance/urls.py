@@ -37,5 +37,5 @@ urlpatterns = [
     url(r'teacher/report/class/$', views.teacher_report_class, name="teacher_report_class"),
 
     # -------------------- Student --------------------------------------
-
+    url(r'student/$',views.student_index,name="student_index")
 ]

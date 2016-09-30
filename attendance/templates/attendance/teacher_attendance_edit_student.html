@@ -58,7 +58,7 @@
 <!--Attendance main view-->
 <div class="container">
     <h2>Take today's attendance</h2>
-    <form action="{% url 'teacher_attendance_today' %}" method="post">
+    <form action="{% url 'teacher_attendance_edit' %}" method="post">
         {% csrf_token %}
         <div  id="attendance_main">
         <div class="attendance_header">
@@ -66,12 +66,14 @@
             <div class="student_check"> <label id="selectAll"><input type="checkbox" name="select_all" id="id_select_all"></label></div>
         <hr id="header">
         </div>
-            {% for student in student_list %}
-                <label for="id_student_{{ student.id }}" class="Student_details">
-                    <div class="student_name" id="id_student_{{ student.id }}">
-                        {{ student }}
+            {% for attendance in attendance_list %}
+                <label for="id_student_{{ attendance.id }}" class="Student_details">
+                    <div class="student_name" id="id_student_{{ attendance.id }}">
+                        {{ attendance.student.user.username }}
                     </div>
-                    <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check">
+                    <input type="checkbox" name="{{ attendance.student.id }}" id="id_{{ attendance.student.id }}" class="student_check"
+                           {% if attendance.is_present %} checked="checked"/>
+                    {% else %} /> {% endif %}
                 <hr>
                 </label>
                 <br clear="both">

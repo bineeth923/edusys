@@ -30,7 +30,7 @@ def redirect_user_to_index(user):
     """
     if is_student(user):
         # do something
-        return HttpResponseRedirect(reverse('admin_index'))
+        return HttpResponseRedirect(reverse('student_index'))
 
     elif is_teacher(user):
         # do something
@@ -603,18 +603,20 @@ def teacher_attendance_edit(request):
         date=timezone.now().date()).order_by('student__roll_no')
     if request.method == 'POST':
         for attendance in attendance_list:
-            if attendance.student.id in request.POST:
+            if str(attendance.student.id) in request.POST:
                 attendance.is_present = True
             else:
                 attendance.is_present = False
-                # TODO return HttpResponseRedirect(reverse() + "?status=success")
+            attendance.save()
+        return HttpResponseRedirect(reverse('teacher_attendance_today') + "?status=success")
     else:
         '''Form details
         * List of student
         * checkbox to see if they present : name - <student.id>
         '''
+        print(attendance_list)
         context['attendance_list'] = attendance_list
-        # TODO return render(request, <template>, context)
+        return render(request, 'attendance/teacher_attendance_edit_student.html', context)
 
 
 ########################################################################################################################
@@ -649,6 +651,7 @@ def student_index(request):
     context['student'] = student
     context['attendance'] = attendance
     context['mark_list'] = mark_list
+    context['subject_list'] = Subject.objects.filter(which_class=student.which_class)
     '''
     !--- Context details ---!
     * student
@@ -659,7 +662,7 @@ def student_index(request):
     * mark_list list of list
         > the inner list contains the
     '''
-    # TODO return render(request,'<template>', context)
+    return render(request,'attendance/student_index.html', context)
 
 
 ########################################################################################################################
