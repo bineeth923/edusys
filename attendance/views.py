@@ -679,11 +679,10 @@ def principal_index(request):
     context = get_error_context(request)
     if request.method == "POST":
         '''Task
-        * Get Subject
         return table with the data
         '''
         subject = Subject.objects.get(pk=int(request.POST['subject']))
-        student_list = Student.objects.filter(which_class__teacher__user=request.user).order_by('roll_no')
+        student_list = Student.objects.filter(which_class__id=int(request.POST['class'])).order_by('roll_no')
         test_list = Test.objects.filter(subject=subject).order_by('date')
         mark_list = []
         attendance_list = []
@@ -708,7 +707,8 @@ def principal_index(request):
         # TODO return render(request, '<template>', context)
     else:
         '''Form
-        * Subject List (subject)
+        * Class List (class)
+        * Subject List(subject)
         '''
         context['class_list'] = Class.objects.all()
         context['subject_list'] = Subject.objects.all()
