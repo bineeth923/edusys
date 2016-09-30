@@ -638,3 +638,78 @@ Views :
 * Check Test result
 * Check Subject Tests
 '''
+
+
+def student_index(request):
+    context = get_error_context(request)
+    student = Student.objects.get(user=request.user)
+    attendance = get_attendance_complete(student)
+    # for sqlite
+    test_names = set([test.name for test in
+                      Test.objects.filter(subject__which_class__student=student)])
+    ''' With MySql or Postgres
+    test_names = [test.name for test in
+                  Test.objects.filter(subject__which_class__teacher__user=request.user).order_by('date').distinct(
+                      'name')]
+    '''
+    mark_list = []
+    for test_name in test_names:
+        marks = Marks.objects.filter(student=student, test__name=test_name).order_by('test__subject__name')
+        mark_list.append(marks)
+    context['student'] = student
+    context['attendance'] = attendance
+    context['mark_list'] = mark_list
+    '''
+    !--- Context details ---!
+    * student
+    * from_date
+    * to_date
+    * attendance :
+        > Dictionary with keys : present, absent, total, percentage_present
+    * mark_list list of list
+        > the inner list contains the
+    '''
+    # TODO return render(request,'<template>', context)
+
+########################################################################################################################
+#                                              Principal Controller                                                    #
+########################################################################################################################
+
+def principal_index(request):
+    context = get_error_context(request)
+    if request.method == "POST":
+        '''Task
+        * Get Subject
+        return table with the data
+        '''
+        subject = Subject.objects.get(pk=int(request.POST['subject']))
+        student_list = Student.objects.filter(which_class__teacher__user=request.user).order_by('roll_no')
+        test_list = Test.objects.filter(subject=subject).order_by('date')
+        mark_list = []
+        attendance_list = []
+        for student in student_list:
+            attendance_list.append(get_attendance_complete(student))
+            student_marks = []
+            for test in test_list:
+                mark = Marks.objects.get(test=test, student=student)
+                student_marks.append(mark)
+            mark_list.append(student_marks)
+        context['subject'] = subject
+        context['mark_list'] = mark_list
+        context['attendance_list'] = attendance_list
+        '''
+        !--- Context details ---!
+        * subject : subject whose marks being viewed
+        * mark_list: list of list
+            > one row contains marks of one student in all test of the subject
+        * attendance_list: list of attendance of students, dictionary
+            > keys: present, absent, total, percentage_present
+        '''
+        # TODO return render(request, '<template>', context)
+    else:
+        '''Form
+        * Subject List (subject)
+        '''
+        context['class_list'] = Class.objects.all()
+        context['subject_list'] = Subject.objects.all()
+        # TODO return render(request,'<template>', context)
