@@ -463,9 +463,14 @@ def teacher_report_view_single(request):
         from_date = parse_date(request.POST['from_date'])
         to_date = parse_date(request.POST['to_date'])
         attendance = get_attendance_report_from_to(student, from_date, to_date)
+        # for sqlite
+        test_names = set([test.name for test in
+                          Test.objects.filter(subject__which_class__teacher__user=request.user)])
+        ''' With MySql or Postgres
         test_names = [test.name for test in
                       Test.objects.filter(subject__which_class__teacher__user=request.user).order_by('date').distinct(
                           'name')]
+        '''
         mark_list = []
         for test_name in test_names:
             marks = Marks.objects.filter(student=student, test__name=test_name).order_by('test__subject__name')
@@ -577,7 +582,7 @@ def teacher_attendance_today(request):
             try:
                 percentage = float(present) / attendance.count() * 100
             except ZeroDivisionError:
-                percentage=0
+                percentage = 0.0
             context['absent'] = absent
             context['present'] = present
             context['total'] = attendance.count()
@@ -597,12 +602,21 @@ def teacher_attendance_edit(request):
                                                     student__which_class__teacher__user=request.user).order_by(
             'student__roll_no')
         if 'edit' in request.POST:
+            '''Form details
+            * List of student
+            * checkbox to see if they present : name - <student.id>
+            '''
             context['attendance_list'] = attendance_list
             # TODO request render(request, <template>, context)
         elif 'delete' in request.POST:
             attendance_list.delete()
         else:
-            pass
+            for attendance in attendance_list:
+                if attendance.student.id in request.POST:
+                    attendance.is_present = True
+                else:
+                    attendance.is_present = False
+                    # TODO return HttpResponseRedirect(reverse() + "?status=success")
     else:
         '''
         Form

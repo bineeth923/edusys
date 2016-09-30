@@ -31,7 +31,7 @@ urlpatterns = [
     # test remove merged with edit
     url(r'^teacher/attendance/$', views.teacher_attendance_today, name="teacher_attendance_today"),
     url(r'^teacher/attendance/edit/$', views.teacher_attendance_edit, name="teacher_attendance_edit"),
-    # TODO remove attendance
+    # remove attendance merged with edit
 
     url(r'teacher/report/student/$', views.teacher_report_view_single, name="teacher_report_single"),
     url(r'teacher/report/class/$', views.teacher_report_class, name="teacher_report_class"),
