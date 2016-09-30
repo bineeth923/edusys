@@ -599,7 +599,8 @@ def teacher_attendance_edit(request):
     if request.method == 'POST':
         date = parse_date(request.POST['date'])
         attendance_list = Attendance.objects.filter(date=date,
-                                                    student__which_class__teacher__user=request.user).order_by(
+                                                    student__in=Student.objects.filter(
+                                                        which_class__teacher__user=request.user)).order_by(
             'student__roll_no')
         if 'edit' in request.POST:
             '''Form details
@@ -670,6 +671,7 @@ def student_index(request):
         > the inner list contains the
     '''
     # TODO return render(request,'<template>', context)
+
 
 ########################################################################################################################
 #                                              Principal Controller                                                    #
