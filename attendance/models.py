@@ -51,7 +51,7 @@ class Principal(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     which_class = models.ForeignKey(Class)
-    phone = models.IntegerField()
+    phone = models.BigIntegerField()
     roll_no = models.IntegerField(unique=False)
 
     def set_user(self, user):
