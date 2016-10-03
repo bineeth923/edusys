@@ -82,23 +82,19 @@
        </div>
     </form>
 </div>
-<div id="snackbar">{{ error_message }}</div>
+{% if error_message %}
+    <div class="snack-wrap">
+  <input type="checkbox" class="snackclose animated" id="close"/><label class="snacklable animated" for="close"></label>
+  <div class="snackbar animated">
+     <p>{{ error_message }}</p>
+  </div>
+</div>
+{% endif %}
 
 </body>
  <script>
      $('input.selectone').on('change', function() {
     $('input.selectone').not(this).prop('checked', false);
 });
-      function snackbar_fun() {
-    // Get the snackbar DIV
-    var x = document.getElementById("snackbar")
-
-    // Add the "show" class to DIV
-    x.className = "show";
-
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-}
-     {% if error_message %}snackbar_fun(){% endif %}
 
  </script>
