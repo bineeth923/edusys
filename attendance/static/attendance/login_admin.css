@@ -21,7 +21,7 @@ a.dropdown-toggle{
     position: relative;
     display: inline-flex;
     color:white;
-    margin-left: 75%;
+    margin-left: 90%;
     margin-top: 1em;
     cursor: context-menu;
     transition: .35s ease-out;
@@ -31,6 +31,7 @@ a.dropdown-toggle{
     position: relative;
     color : white;
     opacity:0.7;
+    font-size:20px;
 }
 
 nav.sidebar,
@@ -169,13 +170,14 @@ section {
   border:#f2f2f2;
   padding:10px 40px 10px 20px;
   color:#fff;
+  font-family:Arial;
   position:relative;
   left:0px;
   bottom:-70px;
   transition: bottom 0.5s ease-in-out;
   z-index:9;
 }
-.snackclose, label {
+.snackclose, label#snackbar_add {
   bottom:-70px;
   position:absolute;
   border:0;
@@ -184,7 +186,7 @@ section {
   display:none;
   z-index:10;
 }
-label {
+label#snackbar_add {
   z-index:11;
   display:block;
   width:100%;
