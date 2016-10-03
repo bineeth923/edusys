@@ -6,7 +6,6 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.dateparse import parse_date
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
@@ -65,16 +64,28 @@ def validate_login(request):
         username = request.POST['username']
         password = request.POST['password']
     except KeyError:
-        return HttpResponseRedirect(reverse('login') + '?status=error')
+        return HttpResponseRedirect(reverse('login') + '?status=formerror')
     user = authenticate(username=username, password=password)
     if user is None:
-        return HttpResponseRedirect(reverse('login') + '?status=error')
+        return HttpResponseRedirect(reverse('login') + '?status=loginerror')
     login(request, user)
+    if 'remember-me' not in request.POST:
+        request.session.set_expiry(0)
     # the following is to classify the user
     return redirect_user_to_index(user)
     # No need for a default as user will be one of these, else the user creation system is flawed
 
-
+def change_password(request):
+    if request.method == "POST" :
+        new_password = request.POST['new_password']
+        if new_password == "":
+            return HttpResponseRedirect(reverse('change_password') + "?status=formerror")
+        request.user.set_password(new_password)
+        request.user.save()
+        return HttpResponseRedirect(reverse('login')+"?status=success")
+    else:
+        context = get_error_context(request)
+        return render(request,'change_password.html', context)
 ########################################################################################################################
 #                                             Admin Controller                                                         #
 ########################################################################################################################
@@ -91,7 +102,6 @@ def admin_teacher_add(request):
         if form.is_valid():
             try:
                 user = User(username=form.cleaned_data['username'])
-                user.email = form.cleaned_data['email']
                 user.set_password(form.cleaned_data['password'])
                 user.save()
                 teacher = Teacher()
@@ -99,16 +109,10 @@ def admin_teacher_add(request):
                 teacher.which_class = form.cleaned_data['which_class']
                 teacher.save()
             except IntegrityError:
-                user = User.objects.get(username=form.cleaned_data['username'])
-                if is_teacher(user):
-                    user.set_password(form.cleaned_data['password'])
-                    user.email = form.cleaned_data['email']
-                    user.save()
-                else:
-                    return HttpResponseRedirect(reverse('admin_teacher_add') + "?status=error")
+                return HttpResponseRedirect(reverse('admin_teacher_add') + "?status=userexist")
             return HttpResponseRedirect(reverse('admin_teacher_add') + "?status=success")
         else:
-            return HttpResponseRedirect(reverse('admin_teacher_add') + "?status=error")
+            return HttpResponseRedirect(reverse('admin_teacher_add') + "?status=formerror")
     else:
         context = get_error_context(request)
         form = TeacherAddForm()
@@ -130,12 +134,32 @@ def admin_teacher_remove(request):
                 return HttpResponseRedirect(reverse('admin_teacher_delete') + "?status=error")
             return HttpResponseRedirect(reverse('admin_teacher_delete') + "?status=success")
         else:
-            return HttpResponseRedirect(reverse('admin_teacher_delete') + "?status=error")
+            return HttpResponseRedirect(reverse('admin_teacher_delete') + "?status=formerror")
     else:
         context = get_error_context(request)
         form = TeacherRemoveForm()
         context['form'] = form
         return render(request, 'attendance/admin_teacher_delete.html', context)
+
+
+@admin_login_required
+def admin_teacher_edit(request):
+    context = get_error_context(request)
+    teacher_lsit = Teacher.objects.all()
+    if request.method == 'POST':
+        if 'edit' in request.POST:
+            '''Form
+            * password
+            * class
+            '''
+            pass
+    else:
+        '''Form details
+        there should be a post with name teacher having the ID of teacher to edit.
+        * a hidden ticked checkbox named edit.
+        '''
+        context['teacher_list'] = teacher_lsit
+        # TODO return render(request, <template>, context)
 
 
 @admin_login_required
@@ -181,7 +205,8 @@ def admin_class_remove(request):
 @teacher_login_required
 def teacher_index(request):
     context = get_error_context(request)
-    return render(request, 'attendance/teacher_index.html', context)
+    # return render(request, 'attendance/teacher_index.html', context)
+    return HttpResponseRedirect(reverse('teacher_attendance_today'))
 
 
 @teacher_login_required
@@ -190,34 +215,36 @@ def teacher_add_student(request):
         form = StudentAddForm(request.POST)
         if form.is_valid():
             try:
+                phone_number = form.cleaned_data['phone']  # returns int, hence equality below
+                if phone_number < 999999999 or phone_number > 10000000000:
+                    return HttpResponseRedirect(reverse('teacher_student_add') + "?status=pherror")
                 rol_list = [student.roll_no for student in
                             Student.objects.filter(which_class__teacher__user=request.user)]
                 roll = form.cleaned_data['roll']
                 if roll in rol_list:
                     raise RollNoExistsError
                 user = User(username=form.cleaned_data['username'])
-                user.email = form.cleaned_data['email']
                 user.set_password(form.cleaned_data['password'])
                 user.save()
                 student = Student()
                 student.set_user(user)
-                student.phone = form.cleaned_data['phone']
+                student.phone = phone_number
                 student.roll_no = form.cleaned_data['roll']
                 student.which_class = Class.objects.get(teacher__user=request.user)
                 student.save()
+                for test in Test.objects.filter(subject__which_class__teacher__user=request.user):
+                    mark = Marks()
+                    mark.test = test
+                    mark.student = student
+                    mark.marks = 0
+                    mark.save()
             except IntegrityError:
-                user = User.objects.get(username=form.cleaned_data['username'])
-                user.email = form.cleaned_data['email']
-                user.set_password(form.cleaned_data['password'])
-                user.save()
-                student = Student.objects.get(user=user)
-                student.phone = form.cleaned_data['phone']
-                student.save()
+                return HttpResponseRedirect(reverse('teacher_student_add') + "?status=userexist")
             except RollNoExistsError:
                 return HttpResponseRedirect(reverse('teacher_student_add') + "?status=rollerror")
             return HttpResponseRedirect(reverse('teacher_student_add') + "?status=success")
         else:
-            return HttpResponseRedirect(reverse('teacher_student_add') + "?status=error")
+            return HttpResponseRedirect(reverse('teacher_student_add') + "?status=formerror")
     else:
         context = get_error_context(request)
         form = StudentAddForm()
@@ -241,7 +268,7 @@ def teacher_remove_student(request):
                 return HttpResponseRedirect(reverse('teacher_student_remove') + "?status=error")
             return HttpResponseRedirect(reverse('teacher_student_remove') + "?status=success")
         else:
-            return HttpResponseRedirect(reverse('teacher_student_remove') + "?status=error")
+            return HttpResponseRedirect(reverse('teacher_student_remove') + "?status=formerror")
     else:
         context = get_error_context(request)
 
@@ -260,16 +287,31 @@ def teacher_student_edit(request):
         roll_list = set()
         for student in student_list:
             string = 'student_' + str(student.id) + '_'
+            if string+'delete' in request.POST:
+                student.delete()
+                continue
             roll = int(request.POST[string + 'roll'])
             if roll not in roll_list:
                 roll_list.add(roll)
             else:
-                return HttpResponseRedirect(reverse('teacher_student_edit') + "?=status=error")
+                return HttpResponseRedirect(reverse('teacher_student_edit') + "?=status=rollerror")
+        student_list = Student.objects.filter(which_class__teacher__user=request.user)
         for student in student_list:
             string = 'student_' + str(student.id) + '_'
             student.roll_no = int(request.POST[string + 'roll'])
-            student.phone = int(request.POST[string + 'phone'])
+            phone_number = int(request.POST[string + 'phone'])
+            if phone_number < 999999999 or phone_number > 10000000000:
+                return HttpResponseRedirect(reverse('teacher_student_edit') + "?status=pherror")
+            student.phone = phone_number
             which_class = Class.objects.get(pk=int(request.POST[string + 'class']))
+            if not student.which_class == which_class:
+                for test in Test.objects.filter(subject__which_class=which_class):
+                    if not Marks.objects.filter(student=student, test=test).exists():
+                        mark = Marks()
+                        mark.test = test
+                        mark.student = student
+                        mark.marks = 0
+                        mark.save()
             student.which_class = which_class
             student.save()
         return HttpResponseRedirect(reverse('teacher_student_edit') + "?status=success")
@@ -460,9 +502,8 @@ def teacher_report_view_single(request):
         return web page with required content
         '''
         student = Student.objects.get(pk=int(request.POST['student']))
-        from_date = parse_date(request.POST['from_date'])
-        to_date = parse_date(request.POST['to_date'])
-        attendance = get_attendance_report_from_to(student, from_date, to_date)
+
+        attendance = get_attendance_complete(student)
         # for sqlite
         test_names = set([test.name for test in
                           Test.objects.filter(subject__which_class__teacher__user=request.user)])
@@ -476,8 +517,6 @@ def teacher_report_view_single(request):
             marks = Marks.objects.filter(student=student, test__name=test_name).order_by('test__subject__name')
             mark_list.append(marks)
         context['student'] = student
-        context['from_date'] = from_date
-        context['to_date'] = to_date
         context['attendance'] = attendance
         context['mark_list'] = mark_list
         context['subject_list'] = Subject.objects.filter(which_class__teacher__user=request.user)
@@ -561,7 +600,7 @@ def teacher_attendance_today(request):
             attendance.date = timezone.now().date()
             attendance.save()
         # return redirect
-        return HttpResponseRedirect(reverse('teacher_attendance_today'))
+        return HttpResponseRedirect(reverse('teacher_attendance_today') + "?status=success")
     else:
         ''' Task
         Check if attendance for today already taken,
@@ -632,6 +671,7 @@ Views :
 '''
 
 
+@student_login_required
 def student_index(request):
     context = get_error_context(request)
     student = Student.objects.get(user=request.user)
@@ -662,7 +702,7 @@ def student_index(request):
     * mark_list list of list
         > the inner list contains the
     '''
-    return render(request,'attendance/student_index.html', context)
+    return render(request, 'attendance/student_index.html', context)
 
 
 ########################################################################################################################

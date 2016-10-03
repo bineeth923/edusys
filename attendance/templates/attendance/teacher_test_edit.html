@@ -43,7 +43,6 @@
                 <ul class="nav navbar-nav">
                     <li ><a href="{% url 'teacher_attendance_today' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_student_remove' %}"> Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
@@ -70,7 +69,7 @@
         <div class="form-group">
             <label class="control-label   col-sm-2" for="id_total_marks">Total marks:</label>
           <div class="col-sm-7">
-            <input type="text" class="form-control" id="id_exam_name" max="9999" value="{{ test_list.0.total_marks }}"  name="total_mark" placeholder="Total marks" required readonly >
+            <input type="number" class="form-control" id="id_exam_name" max="9999" value="{{ test_list.0.total_marks }}"  name="total_mark" placeholder="Total marks" required >
           </div>
         </div>
         <table>
@@ -94,7 +93,7 @@
         </table>
     <div class="form-group">
       <div class=" col-sm-6">
-        <center><button type="submit" class="btn btn-default" value="Add" >Submit</button></center>
+        <center><button type="submit" class="btn btn-default" value="Add" >Update Exam</button></center>
       </div>
         </div>
     </form>

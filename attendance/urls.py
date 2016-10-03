@@ -8,7 +8,7 @@ urlpatterns = [
     url(r'^$', common_login, name='login'),
     url(r'^login/validate/$', validate_login, name='login_validate'),
     url(r'^logout/$', views.logout_user, name='logout'),
-
+    url(r'^change/password/$', views.change_password, name='change_password'),
     # ------------------ Admin ---------------------------------------
 
     url(r'^admin/$', admin_index, name="admin_index"),

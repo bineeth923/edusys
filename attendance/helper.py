@@ -39,7 +39,20 @@ View helper function to generate a context for the template in case error messag
 def get_error_context(request):
     try:  # TODO set appropriate error codes
         error = request.GET['status']
-        context = {'error_message': 'Something went wrong'}
+        message = 'Something went wrong'
+        if error == 'loginerror':
+            message = 'Username or password incorrect'
+        elif error == 'formerror':
+            message = 'Enter the details'
+        elif error == 'userexist':
+            message = 'The username already exists, please try a new one'
+        elif error == 'success':
+            message = 'The operation was successfull'
+        elif error == 'rollerror':
+            message = 'Roll number repeated'
+        elif error == "pherror":
+            message = 'Phone number is incorrect'
+        context = {'error_message': message}
     except KeyError:
         context = {}
     return context

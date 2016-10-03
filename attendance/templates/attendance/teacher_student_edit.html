@@ -42,7 +42,6 @@
                 <ul class="nav navbar-nav">
                     <li ><a href="{% url 'teacher_attendance_today' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_student_remove' %}"> Remove Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
@@ -73,7 +72,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ student.user.username }}</td>
-                        <td><input type="text" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll" id="student_roll"></td>
+                        <td><input type="text" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll" id="student_roll" required></td>
                         <td>
                             <select name="student_{{ student.id }}_class">
                                 <option value="{{ student.which_class.id }}" selected="selected" >{{ student.which_class }}</option>
@@ -82,14 +81,14 @@
                                 {% endfor %}
                             </select>
                         </td>
-                        <td><input type="text" value="{{ student.phone }}" name="student_{{ student.id }}_phone"></td>
+                        <td><input type="number" maxlength="10" max="9999999999" value="{{ student.phone }}" name="student_{{ student.id }}_phone" required></td>
                         <td><input type="checkbox" name="student_{{ student.id }}_delete" > </td>
                     </tr>
                 {% endfor %}
             </table><br><br>
         </div>
     <div id="button_submit_student_edit">
-        <button type="submit" class="btn btn-default" value="Add" >Submit</button>
+        <button type="submit" class="btn btn-default" value="Add" >Edit Details</button>
     </div>
     </form>
 </div>
