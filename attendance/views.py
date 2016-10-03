@@ -85,7 +85,7 @@ def change_password(request):
         return HttpResponseRedirect(reverse('login')+"?status=success")
     else:
         context = get_error_context(request)
-        return render(request,'change_password.html', context)
+        return render(request, 'attendance/change_password.html', context)
 ########################################################################################################################
 #                                             Admin Controller                                                         #
 ########################################################################################################################

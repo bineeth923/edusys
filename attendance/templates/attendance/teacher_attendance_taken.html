@@ -19,7 +19,6 @@
                 <a class="navbar-brand" id="Brand">Shift2Cloud</a>
             </div>
             <div id="admin_login">
-                    <p>Welcome Teacher</p>
                     <div id="admin_logout">
                         <a href="{% url 'logout' %}">Logout</a>
                     </div>
@@ -39,7 +38,8 @@
             <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
                 <img src="{% static "attendance/img/logo.gif" %}">
                 <ul class="nav navbar-nav">
-                    <li ><a href="{% url 'teacher_attendance_today' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                     <li><a href="{% url 'change_password' %}">Change Password<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                   <li ><a href="{% url 'teacher_attendance_today' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_test_add' %}">Add Exam Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
