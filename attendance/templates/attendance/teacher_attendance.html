@@ -72,7 +72,8 @@
                          <div class="studentRoll" style="float: left;margin-left: 4em" >{{ student.roll_no }}</div>
                         <div class="studentName" style="text-align: center"> {{ student.name }}</div>
                     </div>
-                    <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check">
+                    <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check"
+                            {% if attendance.is_present %} checked {% endif %}>
                 <hr>
                 </label>
                 <br clear="both">

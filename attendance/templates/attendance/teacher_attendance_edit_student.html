@@ -56,23 +56,24 @@
 <!-- Nav bar ends -->
 <!--Attendance main view-->
 <div class="container">
-    <h2>Take today's attendance</h2>
+    <h2>Edit today's attendance</h2>
     <form action="{% url 'teacher_attendance_edit' %}" method="post">
         {% csrf_token %}
         <div  id="attendance_main">
         <div class="attendance_header">
-            <div class="student_name"> <label style="font-weight: 500">Name</label></div>
+            <div class="student_name"> <label> Roll no </label>
+            <label style="font-weight: 500;"> Name </label></div>
             <div class="student_check"> <label id="selectAll"><input type="checkbox" name="select_all" id="id_select_all"></label></div>
         <hr id="header">
         </div>
-            {% for attendance in attendance_list %}
-                <label for="id_student_{{ attendance.id }}" class="Student_details">
-                    <div class="student_name" id="id_student_{{ attendance.id }}">
-                        {{ attendance.student.user.username }}
+            {% for student in attendance_list %}
+                <label for="id_student_{{ student.id }}" class="Student_details">
+                    <div class="student_name" id="id_student_{{student.id }}">
+                         <div class="studentRoll" style="float: left;margin-left: 4em" >{{ student.student.roll_no }}</div>
+                        <div class="studentName" style="text-align: center"> {{ student.student.name }}</div>
                     </div>
-                    <input type="checkbox" name="{{ attendance.student.id }}" id="id_{{ attendance.student.id }}" class="student_check"
-                            {% if attendance.is_present %} checked="checked"/>
-                    {% else %} /> {% endif %}
+                    <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check"
+                            {% if student.is_present %} checked="checked" {% endif %}>
                 <hr>
                 </label>
                 <br clear="both">
@@ -82,6 +83,7 @@
 
 
     </form>
+
 </div>
 {% if error_message %}
     <div class="snack-wrap">
@@ -122,3 +124,5 @@
      {% if error_message %}snackbar_fun(){% endif %}
 
 </script>
+
+
