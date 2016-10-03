@@ -1,6 +1,7 @@
 #attendance_main{
     margin-top : 3em;
     display: table;
+    margin-left : 8em;
 }
 h2{
     text-align: center;
@@ -8,15 +9,15 @@ h2{
 .student_name{
     float: left;
 }
-.attendance_header{
 
+.studentRoll{
+    margin-left: 12em;
 }
 #header{
     color : black;
 
 }
 .student_check, .student_name{
-    text-align: center;
     display: table-cell;
     margin-left : 12em;
     margin-bottom: 2px;
@@ -52,10 +53,10 @@ input[type="checkbox"]:focus{
 
 @media (max-width: 800px) {
     .student_check, .student_name{
-        margin-left: 5%;
+        margin-left: 3%;
     }
     .student_name{
-        width : 12em;
+        width : 14em;
     }
     input[type="checkbox"]{
         width : 35px;
@@ -64,13 +65,30 @@ input[type="checkbox"]:focus{
         width:100%;
         margin-left: 0;
     }
+    .student_name label{
+    font-weight: 500;
+    margin-left: 2.8em;
+    }
+    #attendance_main{
+        margin-left:0;
+    }
+
 }
 @media (min-width: 800px){
     hr{
-        margin-left : 24em;
+        margin-left : 20em;
     }
     .btn-default{
         margin-left: 22em;
+    }
+    .student_name label{
+    font-weight: 500;
+    margin-left: 3em;
+        font-size : 1.3em;
+    }
+    .student_roll, .student_name{
+        font-weight: 500;
+        font-size : 1.3em;
     }
 }
 #selectAll{
@@ -81,3 +99,4 @@ input[type="checkbox"]:focus{
     width : 15px;
     height : 15px;
 }
+

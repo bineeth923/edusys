@@ -81,18 +81,16 @@
         <div class="table_new">
         <table >
             <tr>
-                <th>SNo:</th>
-                <th>Username</th>
-                <th>Roll No</th>
+                <th>Roll no:</th>
+                <th>Full Name</th>
                 {% for subject in subject_list %}
                     <th>Marks in {{ subject.name }}</th>
                 {% endfor %}
             </tr>
             {% for student in student_list   %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ student.user.username }}</td>
                     <td>{{ student.roll_no }}</td>
+                    <td>{{ student.name }}</td>
                     {% for subject in subject_list %}
                         <td><input type="number" value="{{ subject.name }}" name="{{ subject.id }}_{{ student.roll_no }}"></td>
                     {% endfor %}

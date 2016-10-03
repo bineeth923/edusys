@@ -61,14 +61,16 @@
         {% csrf_token %}
         <div  id="attendance_main">
         <div class="attendance_header">
-            <div class="student_name"> <label style="font-weight: 500">Name</label></div>
+            <div class="student_name"> <label> Roll no </label>
+            <label style="font-weight: 500;"> Name </label></div>
             <div class="student_check"> <label id="selectAll"><input type="checkbox" name="select_all" id="id_select_all"></label></div>
         <hr id="header">
         </div>
             {% for student in student_list %}
                 <label for="id_student_{{ student.id }}" class="Student_details">
                     <div class="student_name" id="id_student_{{ student.id }}">
-                        {{ student }}
+                         <div class="studentRoll" style="float: left;margin-left: 4em" >{{ student.roll_no }}</div>
+                        <div class="studentName" style="text-align: center"> {{ student.name }}</div>
                     </div>
                     <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check">
                 <hr>

@@ -61,18 +61,19 @@
         <div class=" studentEdit">
             <table >
                 <tr>
-                    <th>SNo:</th>
+                    <th>Roll no:</th>
+                    <th>Name</th>
                     <th>Username</th>
-                    <th>Roll No</th>
                     <th>Class</th>
                     <th>Phone No</th>
+                    <th>New password</th>
                     <th>Delete?</th>
                 </tr>
                 {% for student in  student_list  %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ student.user.username }}</td>
                         <td><input type="number" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll" id="student_roll" required></td>
+                        <td><input type="text" value="{{ student.name }}" name="student_{{ student.id }}_full_name" id="student_full_name" required></td>
+                        <td>{{ student.user.username }}</td>
                         <td>
                             <select name="student_{{ student.id }}_class">
                                 <option value="{{ student.which_class.id }}" selected="selected" >{{ student.which_class }}</option>
@@ -82,6 +83,7 @@
                             </select>
                         </td>
                         <td><input type="number" maxlength="10" max="9999999999" value="{{ student.phone }}" name="student_{{ student.id }}_phone" required></td>
+                        <td><input type="text" name="student_{{ student.id }}_new_password" id="student_password" placeholder="Leave blank if not needed"></td>
                         <td><input type="checkbox" name="student_{{ student.id }}_delete" > </td>
                     </tr>
                 {% endfor %}

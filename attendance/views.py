@@ -75,17 +75,20 @@ def validate_login(request):
     return redirect_user_to_index(user)
     # No need for a default as user will be one of these, else the user creation system is flawed
 
+
 def change_password(request):
-    if request.method == "POST" :
+    if request.method == "POST":
         new_password = request.POST['new_password']
         if new_password == "":
             return HttpResponseRedirect(reverse('change_password') + "?status=formerror")
         request.user.set_password(new_password)
         request.user.save()
-        return HttpResponseRedirect(reverse('login')+"?status=success")
+        return HttpResponseRedirect(reverse('login') + "?status=success")
     else:
         context = get_error_context(request)
         return render(request, 'attendance/change_password.html', context)
+
+
 ########################################################################################################################
 #                                             Admin Controller                                                         #
 ########################################################################################################################
@@ -106,6 +109,7 @@ def admin_teacher_add(request):
                 user.save()
                 teacher = Teacher()
                 teacher.set_user(user)
+                teacher.name = form.cleaned_data['full_name']
                 teacher.which_class = form.cleaned_data['which_class']
                 teacher.save()
             except IntegrityError:
@@ -228,6 +232,7 @@ def teacher_add_student(request):
                 user.save()
                 student = Student()
                 student.set_user(user)
+                student.name = form.cleaned_data['full_name']
                 student.phone = phone_number
                 student.roll_no = form.cleaned_data['roll']
                 student.which_class = Class.objects.get(teacher__user=request.user)
@@ -279,7 +284,7 @@ def teacher_remove_student(request):
 
 @teacher_login_required
 def teacher_student_edit(request):
-    student_list = Student.objects.filter(which_class__teacher__user=request.user)
+    student_list = Student.objects.filter(which_class__teacher__user=request.user).order_by('roll_no')
     if request.method == "POST":
         '''
         Iterate student list and save details, after verifying roll_no
@@ -287,7 +292,8 @@ def teacher_student_edit(request):
         roll_list = set()
         for student in student_list:
             string = 'student_' + str(student.id) + '_'
-            if string+'delete' in request.POST:
+            if string + 'delete' in request.POST:
+                student.user.delete()
                 student.delete()
                 continue
             roll = int(request.POST[string + 'roll'])
@@ -303,6 +309,7 @@ def teacher_student_edit(request):
             if phone_number < 999999999 or phone_number > 10000000000:
                 return HttpResponseRedirect(reverse('teacher_student_edit') + "?status=pherror")
             student.phone = phone_number
+            student.name = request.POST[string+'full_name']
             which_class = Class.objects.get(pk=int(request.POST[string + 'class']))
             if not student.which_class == which_class:
                 for test in Test.objects.filter(subject__which_class=which_class):
@@ -314,6 +321,9 @@ def teacher_student_edit(request):
                         mark.save()
             student.which_class = which_class
             student.save()
+            if request.POST[string+'new_password'] != "":
+                student.user.set_password(request.POST[string+'new_password'])
+                student.user.save()
         return HttpResponseRedirect(reverse('teacher_student_edit') + "?status=success")
     else:
         '''
@@ -380,7 +390,7 @@ def teacher_subject_edit(request):
 
 @teacher_login_required
 def teacher_test_add(request):
-    student_list = Student.objects.filter(which_class__teacher__user=request.user)
+    student_list = Student.objects.filter(which_class__teacher__user=request.user).order_by('roll_no')
     if request.method == "POST":
         ''' TASKs
             check if the object exists
@@ -631,7 +641,7 @@ def teacher_attendance_today(request):
             percentage = "{0:.2f}".format(percentage)
             context['percentage'] = percentage
             return render(request, 'attendance/teacher_attendance_taken.html', context)
-        context['student_list'] = student_list
+        context['student_list'] = student_list.order_by('roll_no')
         return render(request, 'attendance/teacher_attendance.html', context)
         # attendance, student_list
 

@@ -17,13 +17,14 @@ class Class(models.Model):
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     which_class = models.ForeignKey(Class, null=True, default=None)
+    name = models.CharField(max_length=100)
 
     def set_user(self, user):
         self.user = user
         self.user.groups.add(Group.objects.get(name='Teacher'))
 
     def __str__(self):
-        return str(self.user)
+        return str(self.name) + "-" + str(self.which_class)
 
 
 class Admin(models.Model):
@@ -53,6 +54,7 @@ class Student(models.Model):
     which_class = models.ForeignKey(Class)
     phone = models.BigIntegerField()
     roll_no = models.IntegerField(unique=False)
+    name = models.CharField(max_length=100)
 
     def set_user(self, user):
         self.user = user

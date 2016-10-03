@@ -83,7 +83,7 @@
                 {% for marks in mark_list %}
                     <tr>
                         <td>{{ marks.0.student.roll_no }}</td>
-                        <td>{{ marks.0.student.user.username }}</td>
+                        <td>{{ marks.0.student.name }}</td>
                         {% for mark in marks %}
 
                             <td><input type="number" value="{{ mark.marks }}" name="{{ mark.id }}"></td>

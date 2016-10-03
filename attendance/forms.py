@@ -14,10 +14,11 @@ class ClassForm(forms.ModelForm):
         model = Class
         fields = ['grade', 'division']
 
+
 class UserAddForm(forms.Form):
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50)
-    # TODO full_name = forms.CharField(max_length=50)
+    full_name = forms.CharField(max_length=50)
 
 
 class TeacherAddForm(UserAddForm):
