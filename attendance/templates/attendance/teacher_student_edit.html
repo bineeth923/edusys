@@ -43,8 +43,8 @@
                     <li ><a href="{% url 'teacher_attendance_today' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_test_add' %}">Add Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_test_select' %}">Edit Test Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_test_add' %}">Add Exam Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                    <li><a href="{% url 'teacher_test_select' %}">Edit Exam Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_report_single' %}">Report View Single<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
                     <li><a href="{% url 'teacher_report_class' %}">Report View Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
 
@@ -72,7 +72,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ student.user.username }}</td>
-                        <td><input type="text" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll" id="student_roll" required></td>
+                        <td><input type="number" value="{{ student.roll_no }}" name="student_{{ student.id }}_roll" id="student_roll" required></td>
                         <td>
                             <select name="student_{{ student.id }}_class">
                                 <option value="{{ student.which_class.id }}" selected="selected" >{{ student.which_class }}</option>
