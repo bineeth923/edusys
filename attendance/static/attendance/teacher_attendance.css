@@ -68,9 +68,19 @@ input[type="checkbox"]:focus{
     .student_name label{
     font-weight: 500;
     margin-left: 2.8em;
+        font-size : 1.3em;
+
     }
     #attendance_main{
         margin-left:0;
+    }
+    .student_roll, .student_name{
+        font-weight: 500;
+        font-size : 1.3em;
+    }
+    .student_name label{
+        margin-left : 2em;
+        margin-right: -0.5em;
     }
 
 }

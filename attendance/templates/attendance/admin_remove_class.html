@@ -49,6 +49,31 @@
 
     </nav>
 
+ <form action="{% url 'admin_class_remove' %}" method="post">
+        {% csrf_token %}
+        <div class="col-sm-offset-2 col-sm-4">
+            <h2> Select the Class :</h2>
+            <div class="dropdown">
+                <select name="class" style="width: 10% ">
+                    {% for class in class_list %}
+                        <option value="{{ class.id }}">{{ class }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <button id="remove" class="btn btn-default" type="submit" value="Remove" style="width: 20%">Remove Teacher</button>
+        </div>
+    </form>
+      {% if error_message %}
+    <div class="snack-wrap">
+  <input type="checkbox" class="snackclose animated" id="close"/><label class="snacklable animated" for="close"></label>
+  <div class="snackbar animated">
+     <p>{{ error_message }}</p>
+  </div>
+</div>
+{% endif %}
+
+
 </body>
  <script>
    $('li > a').click(function() {

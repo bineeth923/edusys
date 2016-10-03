@@ -199,7 +199,7 @@ def admin_class_remove(request):
         context = get_error_context(request)
         class_list = Class.objects.all()
         context['class_list'] = class_list
-        # TODO return(request, <template>, context)
+        return render(request, 'attendance/admin_remove_class.html', context)
 
 
 ########################################################################################################################
