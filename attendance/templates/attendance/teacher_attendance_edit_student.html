@@ -67,12 +67,12 @@
         <hr id="header">
         </div>
             {% for student in attendance_list %}
-                <label for="id_student_{{ student.id }}" class="Student_details">
-                    <div class="student_name" id="id_student_{{student.id }}">
+                <label for="id_student_{{ student.student.id }}" class="Student_details">
+                    <div class="student_name" id="id_student_{{student.student.id }}">
                          <div class="studentRoll" style="float: left;margin-left: 4em" >{{ student.student.roll_no }}</div>
                         <div class="studentName" style="text-align: center"> {{ student.student.name }}</div>
                     </div>
-                    <input type="checkbox" name="student_{{ student.id }}" id="id_student_{{ student.roll_no }}" class="student_check"
+                    <input type="checkbox" name="{{ student.student.id }}" id="id_student_{{ student.student.roll_no }}" class="student_check"
                             {% if student.is_present %} checked="checked" {% endif %}>
                 <hr>
                 </label>

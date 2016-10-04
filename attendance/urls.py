@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^admin/$', admin_index, name="admin_index"),
     url(r'^admin/teacher/add/$', admin_teacher_add, name='admin_teacher_add'),
     url(r'^admin/teacher/remove/$', views.admin_teacher_remove, name='admin_teacher_delete'),
+    url(r'admin/teacher/edit/$', views.admin_teacher_edit, name='admin_teacher_edit'),
     url(r'^admin/class/add/$', views.admin_class_add, name='admin_class_add'),
     url(r'admin/class/remove/$', views.admin_class_remove, name='admin_class_remove'),
 
@@ -37,5 +38,8 @@ urlpatterns = [
     url(r'teacher/report/class/$', views.teacher_report_class, name="teacher_report_class"),
 
     # -------------------- Student --------------------------------------
-    url(r'student/$',views.student_index,name="student_index")
+    url(r'student/$',views.student_index,name="student_index"),
+
+    # ---------------------Principal---------------------------------------
+    url(r'principal/$', views.principal_index, name="principal_index")
 ]

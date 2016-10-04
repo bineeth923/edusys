@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
     <link rel="stylesheet" href="{% static "attendance/teacher_subject_add.css" %}">
+    
 </head>
 
 
@@ -53,24 +54,26 @@
 
     </nav>
 
-<div class="container">
-    <h2>Add Subjects</h2>
+<div class="container  col-sm-offset-2 col-sm-8" style="position: relative;">
+    <h2 class="col-sm-offset-3" >Enter subject name to Add</h2><br><br>
     <form class="form-horizontal" action="{% url 'teacher_subject_add' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label class="control-label  col-sm-offset-1 col-sm-2" for="id_subject">Subject:</label>
+            <label class="control-label col-sm-1" for="id_subject">Subject:</label>
             <div class="col-sm-7">
                 <input type="text" class="form-control" id="id_subject" maxlength="50"  name="subject"placeholder="Enter subject name" required autofocus>
             </div>
         </div>
+        <br>
 
         <div class="form-group">
-          <div class="col-sm-offset-4 col-sm-6">
-            <center><button type="submit" class="btn btn-default" value="Add" >Add Subject</button></center>
+          <div class="col-sm-8 col-sm-offset-3">
+            <button type="submit" style="width: 19em"  class="btn btn-default " value="Add" >Add Subject</button></center>
           </div>
 
         </div>
     </form>
+             <button  class="btn btn-default col-sm-offset-3" style=" width:20em;" onclick="location.href='{% url 'teacher_test_add' %}'" >Back</button>
 
 </div>
 {% if error_message %}

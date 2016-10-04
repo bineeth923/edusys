@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
@@ -40,7 +41,7 @@ def redirect_user_to_index(user):
         return HttpResponseRedirect(reverse('admin_index'))
     elif is_principal(user):
         # do something
-        return HttpResponseRedirect(reverse('admin_index'))
+        return HttpResponseRedirect(reverse('principal_index'))
     else:
         raise UserIntegrityFailException
 
@@ -77,13 +78,15 @@ def validate_login(request):
 
 
 def change_password(request):
+    if not request.user.is_authenticated:
+        return render(request, 'attendance/unauthorised.html')
     if request.method == "POST":
         new_password = request.POST['new_password']
         if new_password == "":
             return HttpResponseRedirect(reverse('change_password') + "?status=formerror")
         request.user.set_password(new_password)
         request.user.save()
-        return HttpResponseRedirect(reverse('login') + "?status=success")
+        return HttpResponseRedirect(reverse('login') + "?status=pswdchg")
     else:
         context = get_error_context(request)
         return render(request, 'attendance/change_password.html', context)
@@ -149,21 +152,26 @@ def admin_teacher_remove(request):
 @admin_login_required
 def admin_teacher_edit(request):
     context = get_error_context(request)
-    teacher_lsit = Teacher.objects.all()
+    teacher_list = Teacher.objects.all()
     if request.method == 'POST':
-        if 'edit' in request.POST:
-            '''Form
-            * password
-            * class
-            '''
-            pass
+        for teacher in teacher_list:
+            string = str(teacher.id) + "_"
+            if string + 'delete' in request.POST:
+                teacher.remove()
+                continue
+            teacher.name = request.POST[string + 'name']
+            if request.POST[string + 'password'] != "":
+                teacher.user.set_password(request.POST[string + 'passsword'])
+            teacher.save()
+        return HttpResponseRedirect(reverse('admin_teacher_edit') + "?status=success")
     else:
         '''Form details
-        there should be a post with name teacher having the ID of teacher to edit.
-        * a hidden ticked checkbox named edit.
+        for each teacher
+        Sno, Teacher name (<teacher_id>_name), Teacher username,
+        Teacher set new password (<teacher.id>_password), delete (<teacher.id>_delete)
         '''
-        context['teacher_list'] = teacher_lsit
-        # TODO return render(request, <template>, context)
+        context['teacher_list'] = teacher_list
+        return render(request,'attendance/admin_teacher_edit.html', context)
 
 
 @admin_login_required
@@ -189,6 +197,11 @@ def admin_class_remove(request):
     if request.method == "POST":
         class_id = int(request.POST['class'])
         class_obj = Class.objects.get(pk=class_id)
+        try:
+            teacher = Teacher.objects.get(which_class=class_obj)
+            teacher.remove()
+        except Teacher.DoesNotExist:
+            pass
         class_obj.delete()
         return HttpResponseRedirect(reverse('admin_class_remove') + '?status=success')
     else:
@@ -309,7 +322,7 @@ def teacher_student_edit(request):
             if phone_number < 999999999 or phone_number > 10000000000:
                 return HttpResponseRedirect(reverse('teacher_student_edit') + "?status=pherror")
             student.phone = phone_number
-            student.name = request.POST[string+'full_name']
+            student.name = request.POST[string + 'full_name']
             which_class = Class.objects.get(pk=int(request.POST[string + 'class']))
             if not student.which_class == which_class:
                 for test in Test.objects.filter(subject__which_class=which_class):
@@ -321,8 +334,8 @@ def teacher_student_edit(request):
                         mark.save()
             student.which_class = which_class
             student.save()
-            if request.POST[string+'new_password'] != "":
-                student.user.set_password(request.POST[string+'new_password'])
+            if request.POST[string + 'new_password'] != "":
+                student.user.set_password(request.POST[string + 'new_password'])
                 student.user.save()
         return HttpResponseRedirect(reverse('teacher_student_edit') + "?status=success")
     else:
@@ -449,7 +462,7 @@ def teacher_test_add(request):
 
 @teacher_login_required
 def teacher_test_edit(request):
-    context = {}
+    context = get_error_context(request)
     if request.method == "POST":
         test_name = request.POST['test']
         test_list = Test.objects.filter(name=test_name)
@@ -650,6 +663,7 @@ def teacher_attendance_edit(request):
     context = get_error_context(request)
     attendance_list = Attendance.objects.filter(student__which_class__teacher__user=request.user).filter(
         date=timezone.now().date()).order_by('student__roll_no')
+    print(timezone.now())
     if request.method == 'POST':
         for attendance in attendance_list:
             if str(attendance.student.id) in request.POST:
@@ -719,27 +733,33 @@ def student_index(request):
 #                                              Principal Controller                                                    #
 ########################################################################################################################
 
+@principal_login_required
 def principal_index(request):
     context = get_error_context(request)
     if request.method == "POST":
         '''Task
         return table with the data
         '''
-        subject = Subject.objects.get(pk=int(request.POST['subject']))
         student_list = Student.objects.filter(which_class__id=int(request.POST['class'])).order_by('roll_no')
-        test_list = Test.objects.filter(subject=subject).order_by('date')
-        mark_list = []
         attendance_list = []
         for student in student_list:
             attendance_list.append(get_attendance_complete(student))
-            student_marks = []
-            for test in test_list:
-                mark = Marks.objects.get(test=test, student=student)
-                student_marks.append(mark)
-            mark_list.append(student_marks)
-        context['subject'] = subject
-        context['mark_list'] = mark_list
+        subject_report_list = []
+        for subject in Subject.objects.filter(which_class__id=int(request.POST['class'])):
+            mark_list = []
+            for student in student_list:
+                student_marks = []
+                for test in Test.objects.filter(subject=subject):
+                    mark = Marks.objects.get(test=test, student=student)
+                    student_marks.append(mark)
+                mark_list.append(student_marks)
+            subject_report_list.append(mark_list)
+        context['subject_list'] = Subject.objects.filter(which_class__id=int(request.POST['class']))
+        context['subject_report_list'] = zip(Subject.objects.filter(which_class__id=int(request.POST['class'])),
+                                             subject_report_list)
         context['attendance_list'] = attendance_list
+        context['class'] = Class.objects.get(pk=int(request.POST['class']))
+        context['teacher'] = Teacher.objects.get(which_class=context['class'])
         '''
         !--- Context details ---!
         * subject : subject whose marks being viewed
@@ -748,12 +768,12 @@ def principal_index(request):
         * attendance_list: list of attendance of students, dictionary
             > keys: present, absent, total, percentage_present
         '''
-        # TODO return render(request, '<template>', context)
+        return render(request, 'attendance/principal_view_report.html', context)
     else:
         '''Form
         * Class List (class)
         * Subject List(subject)
         '''
         context['class_list'] = Class.objects.all()
-        context['subject_list'] = Subject.objects.all()
-        # TODO return render(request,'<template>', context)
+        print (context['class_list'])
+        return render(request, 'attendance/principle_index.html', context)

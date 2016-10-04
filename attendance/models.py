@@ -15,7 +15,7 @@ class Class(models.Model):
 
 
 class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User)
     which_class = models.ForeignKey(Class, null=True, default=None)
     name = models.CharField(max_length=100)
 
@@ -23,34 +23,46 @@ class Teacher(models.Model):
         self.user = user
         self.user.groups.add(Group.objects.get(name='Teacher'))
 
+    def remove(self):
+        self.user.delete()
+        self.delete()
+
     def __str__(self):
         return str(self.name) + "-" + str(self.which_class)
 
 
 class Admin(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User)
 
     def set_user(self, user):
         self.user = user
         self.user.groups.add(Group.objects.get(name='Admin'))
+
+    def remove(self):
+        self.user.delete()
+        self.delete()
 
     def __str__(self):
         return str(self.user)
 
 
 class Principal(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User)
 
     def set_user(self, user):
         self.user = user
         self.user.groups.add(Group.objects.get(name='Principal'))
+
+    def remove(self):
+        self.user.delete()
+        self.delete()
 
     def __str__(self):
         return str(self.user)
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User)
     which_class = models.ForeignKey(Class)
     phone = models.BigIntegerField()
     roll_no = models.IntegerField(unique=False)
@@ -59,6 +71,10 @@ class Student(models.Model):
     def set_user(self, user):
         self.user = user
         self.user.groups.add(Group.objects.get(name='Student'))
+
+    def remove(self):
+        self.user.delete()
+        self.delete()
 
     def __str__(self):
         return str(self.user)

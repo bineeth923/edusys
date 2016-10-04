@@ -57,21 +57,10 @@
 
 
 <div class="container  col-sm-8">
-    <h2>Detatils of {{ student }}</h2>
+    <h2>Detatils of {{ student.name }}</h2>
     <form class="form-horizontal" action="{% url 'teacher_test_select' %}" method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <label class="control-label   col-sm-2" for="id_from_date">From date:</label>
-          <div class="col-sm-7">
-            <input type="text" class="form-control" id="id_from_date" maxlength="50" value="{{ from_date }}"  name="from_date" placeholder="From date" required readonly >
-          </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label   col-sm-2" for="id_to_date">To date:</label>
-          <div class="col-sm-7">
-            <input type="text" class="form-control" id="id_to_date"  value="{{ to_date }}"  name="to_date" placeholder="To date" required readonly >
-          </div>
-        </div>
+
         <div class="form-group">
             <label class="control-label   col-sm-2" for="id_attendance">Attendance:</label>
           <div class="col-sm-5">

@@ -8,11 +8,10 @@
        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
     <link rel="stylesheet" href="{% static "attendance/teacher_report_class_view.css" %}">
-
+    <link rel="stylesheet" href="{% static "attendance/principal_report_view.css" %}">
 </head>
 
 <body>
@@ -42,51 +41,70 @@
                 <img src="{% static "attendance/img/logo.gif" %}">
                 <ul class="nav navbar-nav">
                      <li><a href="{% url 'change_password' %}">Change Password<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                   <li ><a href="{% url 'teacher_attendance_today' %}">Attendence<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li ><a href="{% url 'teacher_student_add' %}">Add Student<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_student_edit' %}">Edit Student Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_test_add' %}">Add Exam Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_test_select' %}">Edit Exam Details<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_report_single' %}">Report View Single<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'teacher_report_class' %}">Report View Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                </ul>
+                    <li ><a href="{% url 'logout' %}">logout<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
+                 </ul>
             </div>
         </div>
 
     </nav>
 <div class="container  col-sm-8">
-    <form class="form-horizontal" action="{% url 'teacher_report_class' %}" method="post">
+    <form class="form-horizontal" action="{% url 'principal_index' %}" method="post">
             {% csrf_token %}
         <div class="form-group">
-            <label class="control-label   col-sm-2" for="id_subject_name">Subject name:</label>
+            <label class="control-label   col-sm-2" for="id_class_name">Class name:</label>
           <div class="col-sm-7">
-            <input type="text" class="form-control" value="{{ subject.name }}" id="id_subject_name" maxlength="50"  name="test_name"placeholder="Enter exam name" required readonly>
+            <input type="text" class="form-control" value="{{ class }}" id="id_class_name" maxlength="50"  name="test_name" required readonly>
           </div>
         </div>
-    <h2>Marks in all exams of {{ subject.name }} </h2>
+     <div class="form-group">
+            <label class="control-label   col-sm-2" for="id_teacher_name">Teacher name:</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" value="{{teacher.name }}" id="id_teacher_name" maxlength="50"  name="teacher_name" required readonly>
+          </div>
+     </div>
+          <div>
+              <h2>Attendance of all students of class {{ class }} </h2>
+               <table>
+                    <tr>
+                        <th>Roll no</th>
+                        <th>Student name</th>
+                        <th>Present Days</th>
+                        <th>Total working days</th>
+                        <th>Present percentage</th>
+                    </tr>
+                   {% for attendance in attendance_list %}
+                       <tr>
+                            <td>{{ attendance.student.roll_no }}</td>
+                            <td>{{ attendance.student.name }}</td>
+                            <td>{{ attendance.present }}</td>
+                            <td>{{ attendance.total }}</td>
+                            <td>{{ attendance.percentage_present }}</td>
+                       </tr>
+                   {% endfor %}
+                </table>
+          </div>
+{% for report in subject_report_list %}
+    <h2>Marks of {{ report.0.name }} </h2>
         <table>
             <tr>
                 <th>Student Rollno</th>
                 <th>Student name</th>
-                <th>Percentage present</th>
-                {% for mark in mark_list.0 %}
+                {% for mark in report.1.0 %}
                     <th>{{ mark.test.name }}</th>
                 {% endfor %}
- >
+
             </tr>
-
-                {% for attendance,marks in data_list %}
-                    <tr>
-                        <td>{{ marks.0.student.roll_no }}</td>
-                        <td>{{ marks.0.student.name }}</td>
-                        <td>{{ attendance.percentage_present }}</td>
-                        {% for mark in marks %}
-                            <td>{{ mark.marks }}</td>
-                        {% endfor %}
-                    </tr>
+            {% for marks in report.1 %}
+                <tr>
+                    <td>{{ marks.0.student.roll_no }}</td>
+                    <td>{{ marks.0.student.name }}</td>
+                   {% for mark in marks %}
+                        <td>{{ mark.marks}}</td>
                     {% endfor %}
+                </tr>
+                {% endfor %}
         </table>
-
+{% endfor %}
 
 </form>
 </div>

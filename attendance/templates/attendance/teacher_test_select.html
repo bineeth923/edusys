@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static "attendance/teacher_index.css" %}" />
     <link rel="stylesheet" href="{% static "attendance/teacher_test_add.css" %}">
     <link rel="stylesheet" href="{% static "attendance/teacher_test_select.css" %}">
+
 </head>
 
 
@@ -54,47 +55,67 @@
 
     </nav>
 
-<div class="container col-sm-offset-2 col-sm-9">
+<div class="container  col-sm-8 col-sm-offset-2">
     <h2>Select the test </h2>
-    <form class="form-horizontal" action="{% url 'teacher_test_select' %}" method="post">
+    <form class="form-horizontal" action="{% url 'teacher_test_select' %}" onsubmit="return validation_fun()" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <table>
-               <tr>
-                   <th>Exam name</th>
-                   <th>Select</th>
-                   <th>Delete</th>
-               </tr>
+            <label class="control-label  col-sm-2 " for="id_select_test">Select test:</label>
+            <select name="test" class="col-sm-6">
                {% for test in test_names %}
-               <tr>
-                    <td><input type="text" id="{{ forloop.counter }}" name="test" value="{{ test }}" class="form-control" readonly></td>
-                    <td><input type="checkbox" id="{{ forloop.counter }}" value="{{ test }}" class="selectone" name="edit"></td>
-                    <td><input type="checkbox" value="{{ test }}" class="selectone" name="delete" ></td>
-               </tr>
-               {% endfor %}
-            </table>
+                    <option id="{{ forloop.counter }}" >{{ test }}</option>
+               {% endfor %}</select>
+        </div><br>
+        <h4 class="col-sm-offset-1">Select operations</h4>
+        <div class="form-group">
+            <label class="control-label col-sm-2  " for="id_select_edit"> Edit:</label>
+            <div class="col-sm-6">
+                <input type="checkbox"  value="{{ test }}" class="selectone" name="edit" checked>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="id_select_edit"> Delete:</label>
+            <div class="col-sm-6">
+                <input type="checkbox"  value="{{ test }}" class="selectone" id="delete" name="delete">
+            </div>
         </div>
         <div class="form-group">
             <div class=" col-sm-4">
                 {% if test_names %}
                     <button type="submit" class="btn btn-default" name="submit" value="Add">Select Exam</button>
                     {% else %}
-                    <h3>No Tests are present yet. Click here to add test <a href="{% url 'teacher_test_add' %}"><button class="btn btn-default"></button></buttob></a></h3>
+                    <h3>No Tests are present yet. Click here to add test</h3>
                 {% endif %}
             </div>
         </div>
     </form>
 </div>
-
+{% if error_message %}
+    <div class="snack-wrap">
+  <input type="checkbox" class="snackclose animated" id="close"/><label  id="snackbar_add" class="snacklable animated" for="close"></label>
+  <div class="snackbar animated">
+     <p>{{ error_message }}</p>
+  </div>
+</div>
+{% endif %}
 </body>
 <script>
 
     $('input.selectone').on('change', function() {
     $('input.selectone').not(this).prop('checked', false);
 });
-    $('input.selectone').click(function () {
-        var a = $(event.target)[0].id;
-        $("input text").find('#' + a).attr('name','test');
-    })
 
+ function validation_fun() {
+     if(document.getElementById('delete').checked==true) {
+         var r = confirm('Are you sure you want to delete this subject? All the marks associated with this will be gone.');
+         if (r == true) {
+             return true;
+         }
+         else
+             return false;
+     }
+     else{
+         return true;
+     }
+    }
 </script>

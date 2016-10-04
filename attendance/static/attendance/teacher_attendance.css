@@ -32,8 +32,8 @@ cursor: pointer;
 background: #34495E;
 position: relative;
 box-sizing: content-box ;
-width: 20px;
-height: 20px;
+width: 15px;
+height: 15px;
 border-width: 0;
 border-radius: 25%;
 transition: all .3s linear;
@@ -106,7 +106,7 @@ input[type="checkbox"]:focus{
     text-align: left;
 }
 #selectAll input[type="checkbox"]{
-    width : 15px;
-    height : 15px;
+    width : 20px;
+    height : 20px;
 }
 

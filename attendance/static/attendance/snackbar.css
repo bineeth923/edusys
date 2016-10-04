@@ -1,34 +1,10 @@
-input[type="checkbox"]{
-cursor: pointer;
--webkit-appearance: none;
-background: #34495E;
-position: relative;
-box-sizing: content-box ;
-width: 20px;
-height: 20px;
-border-width: 0;
-border-radius: 25%;
-transition: all .3s linear;
-}
-input[type="checkbox"]:checked{
-  background-color: #2ECC71;
-}
-input[type="checkbox"]:focus{
-  outline: 0 none;
-  box-shadow: none;
-}
-.btn-default{
-    margin-left: 30em;
-    margin-top: 2em;
-    width : 40%
-}
 .snack-wrap {
   display:block;
   position:fixed;
   bottom:0px;
   left:10px;
   padding:0px;
-  margin-left : 40%;
+  margin-left : 42%;
 }
 
 .snackbar {
@@ -44,7 +20,7 @@ input[type="checkbox"]:focus{
   z-index:9;
 }
 .snackclose, label#snackbar_add {
-  bottom:-70px;
+  top:-950px;
   position:absolute;
   border:0;
 }
@@ -72,21 +48,11 @@ label#snackbar_add {
   animation-delay:0s;
 }
 @keyframes snackbar-show {
-   0%{ bottom:-70px; }
-  90%, 95% {bottom:15px; }
-  92.5%, 100% {bottom:10px; }
+   0%{ top:-950px; }
+  90%, 95% {top:-875px; }
+  92.5%, 100% {top:-860px; }
 }
 @keyframes snackbar-hide {
-   0%, 7.5% {bottom:10px; }
-  5%,10% {bottom:15px; }
-  100% {bottom:-70px; }
-}
-@media (max-width: 800px) {
-    input[type="checkbox"]{
-        width : 35px;
-    }
-    .btn-default{
-        width:100%;
-        margin-left: 0;
-    }
+   0%, 10% {top:-875px; }
+  100% {top:-950px; }
 }

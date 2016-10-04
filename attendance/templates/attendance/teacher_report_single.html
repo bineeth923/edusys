@@ -55,27 +55,24 @@
 
     </nav>
 
-<div class="container col-sm-offset-2 col-sm-7">
+<div class="container col-sm-offset-1  col-sm-7">
     <h2>Select the student you want to view report:</h2>
     <form class="form-horizontal" action="{% url 'teacher_report_single' %}" method="post">
         {% csrf_token %}
+     <div class="form-group">
+         <label class="control-label col-sm-2" for="id_subject">Select the student:</label>
+            <div class="col-sm-7">
+                <select name="student" class="form-control">
+                {% for student in student_list %}
+                    <option value="{{ student.id }}" >{{ student.roll_no }} : {{ student.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
 
-    <div id="students">
-        <input class="search" placeholder="Search Students">
-        <button class="sort" data-sort="name">Sort by alphabetcal order</button>
-
-        <ul class="list">
-            {% for student in student_list %}
-                    <input style="display: none;" type="radio" name="student" value="{{ student.id }}" id="{{ student.id }}">
-                    <label style="cursor: pointer" for="{{ student.id }}"><p id="{{ student.id }}"class="name" name="student">{{ student.user.username }}</p></label>
-                <br>
-            {% endfor %}
-        </ul>
-    </div>
-
+     </div>
     <div class="form-group">
-          <div class="col-sm-offset-4 col-sm-6">
-            <center><button type="submit" class="btn btn-default" value="Add" >Sumbit</button></center>
+          <div class=" col-sm-6">
+            <center><button type="submit" class="btn btn-default" value="Add" >View Report</button></center>
           </div>
 
         </div>

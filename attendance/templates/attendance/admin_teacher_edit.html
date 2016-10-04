@@ -7,6 +7,7 @@
      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}" />
+    <link rel="stylesheet" href="{% static "attendance/teacher_report_class_view.css" %}">
 
 </head>
 
@@ -49,6 +50,45 @@
         </div>
 
     </nav>
+<div class="container  col-sm-9">
+    <h2>Edit the details of the Teacher</h2>
+    <form action="{% url 'admin_teacher_edit' %}" method="post">
+        {% csrf_token %}
+        <div class=" teacherEdit">
+            <table >
+                <tr>
+                    <th>Sno:</th>
+                    <th>Teacher Name</th>
+                    <th>Username</th>
+                    <th>Class</th>
+                    <th>New password</th>
+                    <th>Delete?</th>
+                </tr>
+                {% for teacher in  teacher_list  %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><input type="text" value="{{ teacher.name }}" name="{{ teacher.id }}_name" id="student_roll" required></td>
+                        <td>{{ teacher.user.username }}</td>
+                        <td>{{ teacher.which_class }}</td>
+                       <td><input type="text" name="{{ teacher.id }}_password" id="teacher_password" placeholder="Leave blank if not needed"></td>
+                        <td><input type="checkbox" name="{{ teacher.id }}_delete" ></td>
+                    </tr>
+                {% endfor %}
+            </table><br><br>
+        </div>
+    <div id="button_submit_student_edit " class="col-sm-offset-3">
+        <button type="submit" class="btn btn-default" value="Add" style="width: 40%;" >Edit Details</button>
+    </div>
+    </form>
+</div>
+{% if error_message %}
+    <div class="snack-wrap">
+  <input type="checkbox" class="snackclose animated" id="close"/><label  id="snackbar_add" class="snacklable animated" for="close"></label>
+  <div class="snackbar animated">
+     <p>{{ error_message }}</p>
+  </div>
+</div>
+{% endif %}
 
 </body>
  <script>

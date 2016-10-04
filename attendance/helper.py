@@ -52,6 +52,8 @@ def get_error_context(request):
             message = 'Roll number repeated'
         elif error == "pherror":
             message = 'Phone number is incorrect'
+        elif error == 'pswdchg':
+            message = 'Password successfully changed'
         context = {'error_message': message}
     except KeyError:
         context = {}
@@ -175,6 +177,7 @@ def get_attendance_complete(student):
     except ZeroDivisionError:
         percentage_present = 0.0
     return {
+        'student': student,
         'present': present,
         'absent': absent,
         'total': total,
