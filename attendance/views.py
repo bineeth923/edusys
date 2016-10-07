@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.datastructures import MultiValueDictKeyError
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
@@ -195,7 +196,10 @@ def admin_class_add(request):
 @admin_login_required
 def admin_class_remove(request):
     if request.method == "POST":
-        class_id = int(request.POST['class'])
+        try:
+            class_id = int(request.POST['class'])
+        except MultiValueDictKeyError:
+            return HttpResponseRedirect(reverse('admin_class_remove') + '?status=selecterror')
         class_obj = Class.objects.get(pk=class_id)
         try:
             teacher = Teacher.objects.get(which_class=class_obj)

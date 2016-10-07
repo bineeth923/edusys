@@ -37,7 +37,7 @@ View helper function to generate a context for the template in case error messag
 
 
 def get_error_context(request):
-    try:  # TODO set appropriate error codes
+    try:
         error = request.GET['status']
         message = 'Something went wrong'
         if error == 'loginerror':
@@ -54,6 +54,8 @@ def get_error_context(request):
             message = 'Phone number is incorrect'
         elif error == 'pswdchg':
             message = 'Password successfully changed'
+        elif error == 'selecterror':
+            message = 'Please select from the list'
         context = {'error_message': message}
     except KeyError:
         context = {}
@@ -114,7 +116,6 @@ def mark_report_subject(student, subject):
     """
     Returns a list of dictionary containing the details of test and marks obtained by student for given subject
     """
-    # TODO test
     test_list = Test.objects.filter(subject=subject)
     mark_details = []
     for test in test_list:
@@ -136,7 +137,6 @@ def get_attendance_report_from_to(student, from_date, to_date):
     """
     returns a dictionary containing the details of the student's attendance in given time range
     """
-    # TODO test
     attendance_list = Attendance.objects.filter(student=student, date__gte=from_date, date__lte=to_date)
     present = 0
     absent = 0
@@ -154,7 +154,7 @@ def get_attendance_report_from_to(student, from_date, to_date):
         'present': present,
         'absent': absent,
         'total': total,
-        'percentage_present': percentage_present
+        'percentage_present': '{0:.2f}'.format(percentage_present)
     }
 
 
@@ -162,7 +162,6 @@ def get_attendance_complete(student):
     """
         returns a dictionary containing the details of the student's attendance so far
         """
-    # TODO test
     attendance_list = Attendance.objects.filter(student=student)
     present = 0
     absent = 0
@@ -181,5 +180,5 @@ def get_attendance_complete(student):
         'present': present,
         'absent': absent,
         'total': total,
-        'percentage_present': percentage_present
+        'percentage_present': '{0:.2f}'.format(percentage_present,)
     }

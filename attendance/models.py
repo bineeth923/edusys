@@ -43,7 +43,7 @@ class Admin(models.Model):
         self.delete()
 
     def __str__(self):
-        return str(self.user)
+        return str(self.name)
 
 
 class Principal(models.Model):
@@ -58,7 +58,7 @@ class Principal(models.Model):
         self.delete()
 
     def __str__(self):
-        return str(self.user)
+        return str(self.name)
 
 
 class Student(models.Model):
@@ -77,7 +77,7 @@ class Student(models.Model):
         self.delete()
 
     def __str__(self):
-        return str(self.user)
+        return self.name
 
 
 class Parent(models.Model):
