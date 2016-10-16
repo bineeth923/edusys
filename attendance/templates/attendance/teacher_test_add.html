@@ -58,6 +58,7 @@
     <h2>Enter the details of Exam and the marks of students</h2>
     <button class="btn btn-inverse " onclick="location.href='{% url 'teacher_subject_add' %}'">Add Subjects</button>
     <button class="btn btn-inverse " onclick="location.href='{% url 'teacher_subject_edit' %}'">Edit/Delete Subjects</button>
+
     <form class="form-horizontal" action="{% url 'teacher_test_add' %}" method="post">
             {% csrf_token %}
         <div class="form-group">
