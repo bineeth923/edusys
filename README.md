@@ -14,6 +14,17 @@ This is simple to use and easy to set up. It can be extended by simply adding ne
   * View reports - Student or Class
   * Add Principal: Who can view each Class report.
 
+
+![2016-12-14 9](https://cloud.githubusercontent.com/assets/14165258/21170997/23722db2-c1ef-11e6-90cf-c46ad8c40b02.png)
+----
+![2016-12-14 10](https://cloud.githubusercontent.com/assets/14165258/21171006/26b8f14a-c1ef-11e6-994a-34d8b726d445.png)
+----
+![2016-12-14 11](https://cloud.githubusercontent.com/assets/14165258/21171009/288372de-c1ef-11e6-815c-d113582b41de.png)
+----
+![2016-12-14 12](https://cloud.githubusercontent.com/assets/14165258/21171011/2a8b3e36-c1ef-11e6-9d2a-f75489be25e3.png)
+----
+
+
 ##Getting started
 
 In order to set up edusys you will need to fulfil folowing dependencies :
