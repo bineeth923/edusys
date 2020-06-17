@@ -1,0 +1,72 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+{% block body %}
+    <div class="navbar navbar-inverse">
+        <div class="">
+            <div class="navbar-header" role="navigation">
+                <a class="navbar-brand" id="Brand">Shift2Cloud</a>
+            </div>
+            <div id="admin_login">
+                <div id="admin_logout">
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-default sidebar" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-sidebar-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                <img src="{% static "attendance/img/logo.gif" %}" alt="logo">
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'admin_class_add' %}">Add Class<span style="font-size:16px;"
+                                                                             class="pull-right hidden-xs showopacity "></span></a>
+                    </li>
+                    <li><a href="{% url 'admin_class_remove' %}">Remove Class<span style="font-size:16px;"
+                                                                                   class="pull-right hidden-xs showopacity "></span></a>
+                    </li>
+                    <li><a href="{% url 'admin_teacher_add' %}">Add Teacher<span style="font-size:16px;"
+                                                                                 class="pull-right hidden-xs showopacity "></span></a>
+                    </li>
+                    <li><a href="{% url 'admin_teacher_edit' %}">Edit teacher<span style="font-size:16px;"
+                                                                                   class="pull-right hidden-xs showopacity "></span></a>
+                    </li>
+                    <li><a href="{% url 'admin_teacher_delete' %}">Remove teacher<span style="font-size:16px;"
+                                                                                       class="pull-right hidden-xs showopacity "></span></a>
+                    </li>
+                    <li><a href="{% url 'change_password' %}">Change Password<span style="font-size:16px;"
+                                                                                   class="pull-right hidden-xs showopacity "></span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    {% block inner-body %}{% endblock %}
+    <script>
+        $('li > a').click(function () {
+            $('li').removeClass();
+            $(this).parent().addClass('active');
+        });
+    </script>
+    {% if error_message %}
+        <div class="snack-wrap">
+            <input type="checkbox" class="snackclose animated" id="close"/><label id="snackbar_add"
+                                                                                  class="snacklable animated"
+                                                                                  for="close"></label>
+            <div class="snackbar animated">
+                <p>{{ error_message }}</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+

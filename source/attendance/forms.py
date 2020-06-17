@@ -1,7 +1,6 @@
 from django import forms
-from django.contrib.auth.models import User
 
-from attendance.models import Class, Teacher, Student
+from attendance.models import Class, Teacher
 
 
 class LoginForm(forms.Form):
@@ -14,6 +13,7 @@ class ClassForm(forms.ModelForm):
         model = Class
         fields = ['grade', 'division']
 
+    division = forms.CharField(required=False)
 
 class UserAddForm(forms.Form):
     username = forms.CharField(max_length=50)

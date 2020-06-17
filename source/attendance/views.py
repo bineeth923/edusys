@@ -1,9 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
-
 # Create your views here.
 from django.urls import reverse
 from django.utils import timezone
@@ -11,8 +9,8 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from attendance.forms import LoginForm, ClassForm, TeacherAddForm, TeacherRemoveForm, StudentAddForm, \
     get_StudentRemoveForm
-from attendance.models import Class, Teacher, Student, Subject
 from attendance.helper import *
+from attendance.models import Class, Teacher, Student, Subject
 
 
 class UserIntegrityFailException(Exception):
@@ -48,7 +46,7 @@ def redirect_user_to_index(user):
 
 
 def common_login(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect_user_to_index(request.user)
     context = get_error_context(request)
     context['form'] = LoginForm()

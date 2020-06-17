@@ -1,95 +1,61 @@
-<head>
-     {% load static %}
-     <title>Welcome Admin</title>
-     <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-       <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}" />
+{% extends 'attendance/layout.html' %}
+{% load static %}
+{% block title %}Welcome Admin{% endblock %}
+{% block head %}
     <link rel="stylesheet" href="{% static "attendance/admin_class_add.css" %}">
+{% endblock %}
 
-</head>
 
 
-<body>
-<div class="navbar navbar-inverse">
-        <div class="">
-            <div class="navbar-header" role="navigation" >
-                <a class="navbar-brand" id="Brand">Shift2Cloud</a>
-            </div>
-            <div id="admin_login">
-                    <div id="admin_logout">
-                        <a href="{% url 'logout' %}">Logout</a>
-                    </div>
-            </div>
-        </div>
-    </div>
-    <nav class="navbar navbar-default sidebar" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
-        <span class="sr-only" >Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-                <img src="{% static "attendance/img/logo.gif" %}">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'change_password' %}">Change Password<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_teacher_add' %}">Add Teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_teacher_edit' %}">Edit teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_teacher_delete' %}">Remove teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_class_add' %}">Add Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_class_remove' %}">Remove Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                </ul>
-            </div>
-        </div>
-
-    </nav>
-
-<form  class="form-horizontal" action="{% url 'admin_class_add' %}" method="post">
+{% block inner-body %}
+    <form class="form-horizontal" action="{% url 'admin_class_add' %}" method="post">
         {% csrf_token %}
-<div class="container">
+        <div class="container">
             <h2>Enter the Class details to add:</h2><br>
-    <div class="form-group">
-        <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Grade:</label>
-      <div class="col-sm-7">
-        <input type="number" class="form-control" id="id_grade"  name="grade"placeholder="Enter Grade" required autofocus>
-      </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Division:</label>
-      <div class="col-sm-7">
-        <input type="text" maxlength="1" class="form-control" id="id_division"  name="division"placeholder="Enter Division" required>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-4 col-sm-8">
-        <center><button type="submit" class="btn btn-default" value="Login" >Add Class</button></center>
-      </div>
-    </div>
-</div>
-</form>
-{% if error_message %}
-    <div class="snack-wrap">
-  <input type="checkbox" class="snackclose animated" id="close"/><label id="snackbar_add" class="snacklable animated" for="close"></label>
-  <div class="snackbar animated">
-     <p>{{ error_message }}</p>
-  </div>
-</div>
-{% endif %}
+            <div class="form-group">
+                <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Grade:</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="id_grade" name="grade" autocomplete="off"
+                           placeholder="Enter Grade" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Division:</label>
+                <div class="col-sm-7">
+                    <input type="text" maxlength="1" class="form-control" id="id_division" name="division"
+                           placeholder="Enter Division (optional)" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-8">
+                    <center>
+                        <button type="submit" class="btn btn-default" value="Login">Add Class</button>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </form>
+    {% if error_message %}
+        <div class="snack-wrap">
+            <label id="snackbar_add" class="snacklable animated" for="close"></label>
+            <input type="checkbox" class="snackclose animated" id="close"/>
+            <div class="snackbar animated">
+                <p>{{ error_message }}</p>
+            </div>
+        </div>
+    {% endif %}
 
-</body>
- <script>
-   $('li > a').click(function() {
-    $('li').removeClass();
-    $(this).parent().addClass('active');
-});
+{% endblock %}
 
-</script>
+{% block script %}
+    <script>
+        $('li > a').click(function () {
+            $('li').removeClass();
+            $(this).parent().addClass('active');
+        });
+    </script>
+{% endblock %}
+
 
 
 

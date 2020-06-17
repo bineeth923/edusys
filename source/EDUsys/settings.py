@@ -119,10 +119,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# default static files settings for PythonAnywhere.
-# see https://help.pythonanywhere.com/pages/DjangoStaticFiles for more info
-MEDIA_ROOT = u'/home/sidhin/EDUsys/media'
-MEDIA_URL = '/media/'
-STATIC_ROOT = u'/home/sidhin/EDUsys/static'
-STATIC_URL = '/static/'

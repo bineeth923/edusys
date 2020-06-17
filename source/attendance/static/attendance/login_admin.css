@@ -4,12 +4,10 @@ body,
 html {
     height: 100%;
         font-family: 'Khand', sans-serif;
-
 }
 div.navbar.navbar-inverse{
     margin-bottom: 0;
     z-index: 999;
-
 }
 a.dropdown-toggle{
     margin-right: 25px;
@@ -20,8 +18,8 @@ a.dropdown-toggle{
 #admin_login {
     position: relative;
     display: inline-flex;
-    color:white;
-    margin-left: 90%;
+    color: white;
+    right: 1em;
     margin-top: 1em;
     cursor: context-menu;
     transition: .35s ease-out;
@@ -61,19 +59,26 @@ img{
         float: right;
     }
 
+    .navbar {
+        border-radius: 0;
+    }
+
     nav.sidebar:hover + .main {
         margin-left: 200px;
     }
-    nav.sidebar.navbar.sidebar>.container .navbar-brand,
-    .navbar>.container-fluid .navbar-brand {
-        margin-left: 0px;
+
+    nav.sidebar.navbar.sidebar > .container .navbar-brand,
+    .navbar > .container-fluid .navbar-brand {
+        margin-left: 0;
     }
+
     nav.sidebar .navbar-brand,
     nav.sidebar .navbar-header {
         text-align: center;
         width: 100%;
-        margin-left: 0px;
+        margin-left: 0;
     }
+
     nav.sidebar a {
         padding-right: 13px;
     }
@@ -103,15 +108,15 @@ img{
     nav.sidebar {
         width: 200px;
         height: 100%;
-        margin-left: 0px;
+        margin-left: 0;
         float: left;
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
     nav.sidebar li {
         width: 100%;
     }
     nav.sidebar:hover {
-        margin-left: 0px;
+        margin-left: 0;
     }
     .forAnimate {
         opacity: 1;
@@ -126,7 +131,7 @@ img{
     }
 
     nav.sidebar {
-        margin-left: 0px;
+        margin-left: 0;
         float: left;
     }
     nav.sidebar .forAnimate {
@@ -156,25 +161,25 @@ section {
 
 }
 .snack-wrap {
-  display:block;
-  position:fixed;
-  bottom:0px;
-  left:10px;
-  padding:0px;
-  margin-left : 40%;
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 10px;
+    padding: 0;
+    margin-left: 40%;
 }
 
 .snackbar {
-  display:block;
-  background:#222;
-  border:#f2f2f2;
-  padding:10px 40px 10px 20px;
-  color:#fff;
-  position:relative;
-  left:0px;
-  bottom:-70px;
-  transition: bottom 0.5s ease-in-out;
-  z-index:9;
+    display: block;
+    background: #222;
+    border: #f2f2f2;
+    padding: 10px 40px 10px 20px;
+    color: #fff;
+    position: relative;
+    left: 0;
+    bottom: -70px;
+    transition: bottom 0.5s ease-in-out;
+    z-index: 9;
 }
 .snackclose, label#snackbar_add {
   bottom:-70px;
@@ -196,7 +201,6 @@ label#snackbar_add {
 .animated {
   animation-name: snackbar-show;
   animation-duration: 0.5s;
-  animation-direction: forwards;
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
 }

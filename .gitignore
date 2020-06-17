@@ -106,18 +106,6 @@ ENV/
 
 .gitignore
 .idea/
-EDUsys/__init__.pyc
-EDUsys/__pycache__/urls.cpython-35.pyc
-EDUsys/settings.pyc
-EDUsys/urls.pyc
-EDUsys/wsgi.pyc
-attendance/__init__.pyc
-attendance/__pycache__/
-attendance/admin.pyc
-attendance/forms.pyc
-attendance/helper.pyc
-attendance/migrations/
-attendance/models.pyc
-attendance/urls.pyc
-attendance/views.pyc
+*pyc
+migrations/
 db.sqlite3

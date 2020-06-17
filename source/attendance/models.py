@@ -7,16 +7,16 @@ from django.db import models
 # Create your models here.
 
 class Class(models.Model):
-    grade = models.IntegerField()
-    division = models.CharField(max_length=1)
+    grade = models.CharField(max_length=20)
+    division = models.CharField(max_length=20)
 
     def __str__(self):
-        return str(self.grade) + ":" + self.division
+        return str(self.grade) + ":" + str(self.division)
 
 
 class Teacher(models.Model):
-    user = models.OneToOneField(User)
-    which_class = models.ForeignKey(Class, null=True, default=None)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    which_class = models.ForeignKey(Class, null=True, default=None, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
 
     def set_user(self, user):
@@ -32,7 +32,8 @@ class Teacher(models.Model):
 
 
 class Admin(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
 
     def set_user(self, user):
         self.user = user
@@ -47,7 +48,8 @@ class Admin(models.Model):
 
 
 class Principal(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
 
     def set_user(self, user):
         self.user = user
@@ -62,8 +64,8 @@ class Principal(models.Model):
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User)
-    which_class = models.ForeignKey(Class)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    which_class = models.ForeignKey(Class, on_delete=models.CASCADE)
     phone = models.BigIntegerField()
     roll_no = models.IntegerField(unique=False)
     name = models.CharField(max_length=100)
@@ -81,7 +83,7 @@ class Student(models.Model):
 
 
 class Parent(models.Model):
-    student = models.ForeignKey(User)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.CharField(max_length=100)
     phone = models.IntegerField()
     name = models.CharField(max_length=100)
@@ -89,17 +91,17 @@ class Parent(models.Model):
 
 class Attendance(models.Model):
     date = models.DateTimeField()
-    student = models.ForeignKey(Student)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     is_present = models.BooleanField(default=True)
 
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    which_class = models.ForeignKey(Class)
+    which_class = models.ForeignKey(Class, on_delete=models.CASCADE)
 
 
 class Test(models.Model):
-    subject = models.ForeignKey(Subject)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     total_marks = models.IntegerField()
     name = models.CharField(max_length=100, unique=False)
     date = models.DateField()
@@ -107,8 +109,8 @@ class Test(models.Model):
 
 class Marks(models.Model):
     marks = models.DecimalField(decimal_places=2, max_digits=7)
-    test = models.ForeignKey(Test)
-    student = models.ForeignKey(Student)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
 
 # Experimental feature to be added

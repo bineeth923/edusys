@@ -1,112 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-         {% load static %}
-  <title>Add Teacher</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends 'attendance/layout.html' %}
+{% load static %}
+{% block head %}
     <link rel="stylesheet" href="{% static "attendance/admin_teacher_add.css" %}">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="{% static "attendance/login_admin.css" %}" />
+{% endblock %}
+{% block title %}
+    Add Teacher
+{% endblock %}
 
-</head>
-<body >
-<div class="navbar navbar-inverse">
-        <div class="">
-            <div class="navbar-header" role="navigation" >
-                <a class="navbar-brand" id="Brand">Shift2Cloud</a>
-            </div>
-            <div id="admin_login">
-                    <div id="admin_logout">
-                        <a href="{% url 'logout' %}">Logout</a>
-                    </div>
-            </div>
-        </div>
-    </div>
-    <nav class="navbar navbar-default sidebar" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
-        <span class="sr-only" >Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-                <img src="{% static "attendance/img/logo.gif" %}">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'change_password' %}">Change Password<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-
-                    <li class="" ><a href="{% url 'admin_teacher_add' %}">Add Teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                     <li><a href="{% url 'admin_teacher_edit' %}">Edit teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                   <li><a href="{% url 'admin_teacher_delete' %}">Remove teacher<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_class_add' %}">Add Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                    <li><a href="{% url 'admin_class_remove' %}">Remove Class<span style="font-size:16px;" class="pull-right hidden-xs showopacity "></span></a></li>
-                </ul>
-            </div>
-        </div>
-
-    </nav>
-
-
-<div class="container">
-  <h2>Add Teacher</h2>
-  <form class="form-horizontal" action="{% url 'admin_teacher_add' %}" method="post">
+{% block inner-body %}
+    <div class="container">
+        <h2>Add Teacher</h2>
+        <form class="form-horizontal" action="{% url 'admin_teacher_add' %}" method="post">
             {% csrf_token %}
-      <div class="form-group">
-        <label class="control-label col-sm-offset-3  col-sm-2" for="id_full_name">Fullname:</label>
-      <div class="col-sm-7">
-        <input type="text" class="form-control" id="id_full_name" maxlength="50"  name="full_name"placeholder="Enter Full Name" required autofocus>
-      </div>
+            <div class="form-group">
+                <label class="control-label col-sm-offset-3  col-sm-2" for="id_full_name">Fullname:</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="id_full_name" maxlength="50" name="full_name"
+                           placeholder="Enter Full Name" autocomplete="off" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Username:</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="id_username" name="username"
+                           placeholder="Enter username"
+                           required autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-offset-3 col-sm-2" for="id_password">Password:</label>
+                <div class="col-sm-7">
+                    <input type="password" class="form-control" id="id_password" name="password"
+                           placeholder="Enter password"
+                           required autocomplete="off">
+                </div>
+            </div>
+
+
+            <div class="dropdown">
+                <label class="control-label col-sm-offset-3 col-sm-2" for="id_which_class">Which Class:</label>
+                <div class="col-sm-7" id="select_class">
+                    {{ form.which_class }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <center>
+                        <button type="submit" class="btn btn-default" value="Add">Add Teacher</button>
+                    </center>
+                </div>
+
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label class="control-label col-sm-offset-3  col-sm-2" for="id_username">Username:</label>
-      <div class="col-sm-7">
-        <input type="text" class="form-control" id="id_username"  name="username"placeholder="Enter username" required autofocus>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-offset-3 col-sm-2" for="id_password">Password:</label>
-      <div class="col-sm-7">
-        <input type="text" class="form-control" id="id_password" name="password" placeholder="Enter password" required>
-      </div>
-    </div>
-
-
- <div class="dropdown">
-    <label class="control-label col-sm-offset-3 col-sm-2" for="id_which_class">Which Class:</label>
-  <div class="col-sm-7" id="select_class">
-      {{ form.which_class }}
-  </div>
-</div>
-    <div class="form-group">
-      <div class="col-sm-offset-4 col-sm-6">
-        <center><button type="submit" class="btn btn-default" value="Add" >Add Teacher</button></center>
-      </div>
-
-    </div>
-  </form>
-</div>
-{% if error_message %}
-    <div class="snack-wrap">
-  <input type="checkbox" class="snackclose animated" id="close"/><label  id="snackbar_add" class="snacklable animated" for="close"></label>
-  <div class="snackbar animated">
-     <p>{{ error_message }}</p>
-  </div>
-</div>
-{% endif %}
-
-</body>
- <script>
-   $('li > a').click(function() {
-    $(this).parent().addClass('active');
-           $('li').removeClass();
-
-});
-
-</script>
-</html>
+{% endblock %}
 
