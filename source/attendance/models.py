@@ -14,10 +14,21 @@ class Class(models.Model):
         return str(self.grade) + ":" + str(self.division)
 
 
+class Subject(models.Model):
+    name = models.CharField(max_length=200)
+    which_class = models.ForeignKey(Class, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        ordering = ['name']
+
+
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    which_class = models.ForeignKey(Class, null=True, default=None, on_delete=models.CASCADE)
+    which_class = models.ForeignKey(Class, null=True, default=None, on_delete=models.DO_NOTHING, related_name='teacher')
     name = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['name']
 
     def set_user(self, user):
         self.user = user
@@ -29,6 +40,15 @@ class Teacher(models.Model):
 
     def __str__(self):
         return str(self.name) + "-" + str(self.which_class)
+
+
+class TeacherSubjectAssociation(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
+    subject = models.ForeignKey(Subject, on_delete=models.DO_NOTHING)
+    hour = models.IntegerField()
+
+    class Meta:
+        db_table = 'attendance_teacher_subject_association'
 
 
 class Admin(models.Model):
@@ -65,10 +85,14 @@ class Principal(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    which_class = models.ForeignKey(Class, on_delete=models.CASCADE)
+    which_class = models.ForeignKey(Class, on_delete=models.DO_NOTHING, related_name='students')
     phone = models.BigIntegerField()
+    email = models.EmailField()
     roll_no = models.IntegerField(unique=False)
     name = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['name']
 
     def set_user(self, user):
         self.user = user
@@ -83,7 +107,7 @@ class Student(models.Model):
 
 
 class Parent(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='parent')
     email = models.CharField(max_length=100)
     phone = models.IntegerField()
     name = models.CharField(max_length=100)
@@ -91,17 +115,13 @@ class Parent(models.Model):
 
 class Attendance(models.Model):
     date = models.DateTimeField()
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.DO_NOTHING)
+    teacher_subject_association = models.ForeignKey(TeacherSubjectAssociation, on_delete=models.DO_NOTHING)
     is_present = models.BooleanField(default=True)
 
 
-class Subject(models.Model):
-    name = models.CharField(max_length=100)
-    which_class = models.ForeignKey(Class, on_delete=models.CASCADE)
-
-
 class Test(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.DO_NOTHING)
     total_marks = models.IntegerField()
     name = models.CharField(max_length=100, unique=False)
     date = models.DateField()
