@@ -10,6 +10,8 @@ urlpatterns = [
     # ------------------ APIs ---------------------------------------
     path('api/teacher/', api_views.TeacherAPI.as_view()),
     path('api/class/', api_views.ClassAPI.as_view()),
+    path('api/subject/<int:id>/', api_views.SubjectAPI.as_view()),
+    path('api/subject/', api_views.SubjectAPI.as_view()),
 
     url(r'^$', common_login, name='login'),
     url(r'^login/validate/$', validate_login, name='login_validate'),

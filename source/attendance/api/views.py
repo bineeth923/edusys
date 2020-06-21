@@ -4,8 +4,8 @@ from django.db import IntegrityError
 from rest_framework import generics, mixins, status
 from rest_framework.response import Response
 
-from attendance.api.serializer import TeacherSerializer, ClassSerializer
-from attendance.models import Teacher, Class
+from attendance.api.serializer import TeacherSerializer, ClassSerializer, SubjectSerializer
+from attendance.models import Teacher, Class, Subject
 
 
 def create_user(username, password):
@@ -48,7 +48,7 @@ class ClassAPI(mixins.ListModelMixin,
                mixins.CreateModelMixin,
                mixins.UpdateModelMixin,
                generics.GenericAPIView):
-    queryset = Class.objects.filter(teacher__isnull=True)
+    queryset = Class.objects.filter()
     serializer_class = ClassSerializer
 
     def get(self, request, *args, **kwargs):
@@ -59,3 +59,25 @@ class ClassAPI(mixins.ListModelMixin,
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+
+class SubjectAPI(mixins.ListModelMixin,
+                 mixins.CreateModelMixin,
+                 mixins.UpdateModelMixin,
+                 mixins.DestroyModelMixin,
+                 generics.GenericAPIView):
+    queryset = Subject.objects.all()
+    lookup_field = 'id'
+    serializer_class = SubjectSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

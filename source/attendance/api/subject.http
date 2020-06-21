@@ -1,0 +1,31 @@
+###
+PUT http://localhost:8000/edu/api/subject/1/
+Content-Type: application/json
+
+{
+  "name": "UPSC",
+  "classes": [
+    3
+  ]
+}
+
+
+###
+POST http://localhost:8000/edu/api/subject/
+Content-Type: application/json
+
+{
+  "name": "PSC",
+  "classes": [
+    3,
+    2
+  ]
+}
+
+###
+DELETE http://localhost:8000/edu/api/subject/3/
+Content-Type: application/json
+
+###
+GET http://localhost:8000/edu/api/subject/
+Accept: application/json

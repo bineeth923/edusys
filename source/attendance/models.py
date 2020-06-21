@@ -16,7 +16,7 @@ class Class(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=200)
-    which_class = models.ForeignKey(Class, on_delete=models.DO_NOTHING)
+    classes = models.ManyToManyField(Class, related_name='subjects')
 
     class Meta:
         ordering = ['name']
