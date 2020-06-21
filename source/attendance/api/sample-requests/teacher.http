@@ -1,0 +1,15 @@
+POST http://localhost:8000/edu/api/teacher/
+Content-Type: application/json
+
+{
+  "name": "Sujatha",
+  "user_id": "sujatha123",
+  "password": "sujatha"
+}
+
+###
+GET http://127.0.0.1:8000/edu/api/teacher/
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-06-21T062421.200.json

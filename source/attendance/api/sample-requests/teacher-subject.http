@@ -1,0 +1,26 @@
+DELETE http://localhost:8000/edu/api/teacher-subject/4
+Content-Type: application/json
+
+<> 2020-06-21T063510.404.json
+<> 2020-06-21T063424.500.txt
+
+###
+POST http://localhost:8000/edu/api/teacher-subject/
+Content-Type: application/json
+
+{
+  "teacher": 1,
+  "subject": 1
+}
+
+<> 2020-06-21T065244.201.json
+<> 2020-06-21T064056.500.txt
+
+
+###
+GET http://localhost:8000/edu/api/teacher-subject/
+Accept: application/json
+
+###
+GET http://localhost:8000/edu/api/teacher-subject/1
+Accept: application/json

@@ -8,10 +8,20 @@ from attendance.views import validate_login, common_login, admin_teacher_add, ad
 urlpatterns = [
 
     # ------------------ APIs ---------------------------------------
+    path('api/teacher/<int:id>', api_views.TeacherAPI.as_view()),
     path('api/teacher/', api_views.TeacherAPI.as_view()),
+
+    path('api/class/<int:id>', api_views.ClassAPI.as_view()),
     path('api/class/', api_views.ClassAPI.as_view()),
+
     path('api/subject/<int:id>/', api_views.SubjectAPI.as_view()),
     path('api/subject/', api_views.SubjectAPI.as_view()),
+
+    path('api/teacher-subject/<int:id>', api_views.TeacherSubjectAPI.as_view()),
+    path('api/teacher-subject/', api_views.TeacherSubjectAPI.as_view()),
+
+    path('api/student/<int:id>', api_views.StudentAPI.as_view()),
+    path('api/student/', api_views.StudentAPI.as_view()),
 
     url(r'^$', common_login, name='login'),
     url(r'^login/validate/$', validate_login, name='login_validate'),

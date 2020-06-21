@@ -21,6 +21,9 @@ class Subject(models.Model):
     class Meta:
         ordering = ['name']
 
+    def __str__(self):
+        return str(self.name) + ":" + str(self.id)
+
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -39,12 +42,16 @@ class Teacher(models.Model):
         self.delete()
 
     def __str__(self):
-        return str(self.name) + "-" + str(self.which_class)
+        return str(self.name) + ":" + str(self.id)
 
 
 class TeacherSubjectAssociation(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
-    subject = models.ForeignKey(Subject, on_delete=models.DO_NOTHING)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.subject_name = self.subject.name
+
+    teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING, related_name='teacher_subject_association')
+    subject = models.ForeignKey(Subject, on_delete=models.DO_NOTHING, related_name='teacher_subject_association')
 
     class Meta:
         db_table = 'attendance_teacher_subject_association'
@@ -84,7 +91,7 @@ class Principal(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    which_class = models.ForeignKey(Class, on_delete=models.DO_NOTHING, related_name='students')
+    which_class = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='students')
     phone = models.BigIntegerField()
     email = models.EmailField()
     roll_no = models.IntegerField(unique=False)
@@ -115,7 +122,7 @@ class Parent(models.Model):
 class Attendance(models.Model):
     date = models.DateTimeField(null=False)
     student = models.ForeignKey(Student, on_delete=models.DO_NOTHING, null=False)
-    teacher_subject_association = models.ForeignKey(TeacherSubjectAssociation, on_delete=models.DO_NOTHING)
+    teacher_subject_association = models.ForeignKey(TeacherSubjectAssociation, on_delete=models.CASCADE)
     hour = models.CharField(null=False, max_length=20)
     is_present = models.BooleanField(default=False)
 

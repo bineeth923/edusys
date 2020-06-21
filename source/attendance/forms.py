@@ -15,6 +15,7 @@ class ClassForm(forms.ModelForm):
 
     division = forms.CharField(required=False)
 
+
 class UserAddForm(forms.Form):
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50)

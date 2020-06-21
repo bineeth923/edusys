@@ -1,0 +1,36 @@
+DELETE http://localhost:8000/edu/api/student/3
+Content-Type: application/json
+
+###
+PUT http://localhost:8000/edu/api/student/2
+Content-Type: application/json
+
+{
+  "phone": 9956765797,
+  "email": "email2@gmail.com",
+  "roll_no": "3",
+  "name": "Some name"
+}
+
+###
+POST http://localhost:8000/edu/api/student/
+Content-Type: application/json
+
+{
+  "phone": 9567575765,
+  "email": "randomEmail@gmail.com",
+  "roll_no": "4",
+  "name": "Annan",
+  "user_id": "student34",
+  "password": "admin",
+  "which_class": 1
+}
+
+
+###
+GET http://localhost:8000/edu/api/student/2
+Accept: application/json
+
+###
+GET http://localhost:8000/edu/api/student/
+Accept: application/json
