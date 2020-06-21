@@ -1,10 +1,16 @@
-import django.contrib.auth.views
 from django.conf.urls import url
+from django.urls import path
 
 from attendance import views
+from attendance.api import views as api_views
 from attendance.views import validate_login, common_login, admin_teacher_add, admin_index
 
 urlpatterns = [
+
+    # ------------------ APIs ---------------------------------------
+    path('api/teacher/', api_views.TeacherAPI.as_view()),
+    path('api/class/', api_views.ClassAPI.as_view()),
+
     url(r'^$', common_login, name='login'),
     url(r'^login/validate/$', validate_login, name='login_validate'),
     url(r'^logout/$', views.logout_user, name='logout'),
@@ -43,3 +49,4 @@ urlpatterns = [
     # ---------------------Principal---------------------------------------
     url(r'principal/$', views.principal_index, name="principal_index")
 ]
+

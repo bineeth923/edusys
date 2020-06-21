@@ -1,11 +1,3 @@
-"""
-Author : Sidhin S Thomas
-
-Any enquiries regarding code, email at sidhin.thomas@gmail.com
-
-Copyright 2016 Shift2Cloud Technologies
-"""
-
 from django.shortcuts import render
 
 from attendance.models import Attendance, Test, Marks

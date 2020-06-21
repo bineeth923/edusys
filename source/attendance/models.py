@@ -8,7 +8,7 @@ from django.db import models
 
 class Class(models.Model):
     grade = models.CharField(max_length=20)
-    division = models.CharField(max_length=20)
+    division = models.CharField(max_length=20, null=True)
 
     def __str__(self):
         return str(self.grade) + ":" + str(self.division)
@@ -45,7 +45,6 @@ class Teacher(models.Model):
 class TeacherSubjectAssociation(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
     subject = models.ForeignKey(Subject, on_delete=models.DO_NOTHING)
-    hour = models.IntegerField()
 
     class Meta:
         db_table = 'attendance_teacher_subject_association'
@@ -114,10 +113,11 @@ class Parent(models.Model):
 
 
 class Attendance(models.Model):
-    date = models.DateTimeField()
-    student = models.ForeignKey(Student, on_delete=models.DO_NOTHING)
+    date = models.DateTimeField(null=False)
+    student = models.ForeignKey(Student, on_delete=models.DO_NOTHING, null=False)
     teacher_subject_association = models.ForeignKey(TeacherSubjectAssociation, on_delete=models.DO_NOTHING)
-    is_present = models.BooleanField(default=True)
+    hour = models.CharField(null=False, max_length=20)
+    is_present = models.BooleanField(default=False)
 
 
 class Test(models.Model):

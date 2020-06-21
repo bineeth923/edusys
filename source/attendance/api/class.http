@@ -1,0 +1,17 @@
+PUT http://localhost:8000/edu/api/class/
+
+###
+POST http://localhost:8000/edu/api/class/
+Content-Type: application/json
+
+{
+  "grade": "MBA",
+  "division": "I"
+}
+
+###
+GET http://localhost:8000/edu/api/class/
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
