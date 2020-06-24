@@ -46,12 +46,8 @@ class Teacher(models.Model):
 
 
 class TeacherSubjectAssociation(models.Model):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.subject_name = self.subject.name
-
-    teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING, related_name='teacher_subject_association')
-    subject = models.ForeignKey(Subject, on_delete=models.DO_NOTHING, related_name='teacher_subject_association')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='teacher_subject_association')
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='teacher_subject_association')
 
     class Meta:
         db_table = 'attendance_teacher_subject_association'
@@ -92,8 +88,8 @@ class Principal(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     which_class = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='students')
-    phone = models.BigIntegerField()
-    email = models.EmailField()
+    phone = models.BigIntegerField(unique=True)
+    email = models.EmailField(unique=True)
     roll_no = models.IntegerField(unique=False)
     name = models.CharField(max_length=100)
 
@@ -113,7 +109,7 @@ class Student(models.Model):
 
 
 class Parent(models.Model):
-    student = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='parent')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='parent')
     email = models.CharField(max_length=100)
     phone = models.IntegerField()
     name = models.CharField(max_length=100)
@@ -121,10 +117,14 @@ class Parent(models.Model):
 
 class Attendance(models.Model):
     date = models.DateTimeField(null=False)
-    student = models.ForeignKey(Student, on_delete=models.DO_NOTHING, null=False)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
     teacher_subject_association = models.ForeignKey(TeacherSubjectAssociation, on_delete=models.CASCADE)
     hour = models.CharField(null=False, max_length=20)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     is_present = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('student', 'teacher_subject_association', 'date', 'hour')
 
 
 class Test(models.Model):

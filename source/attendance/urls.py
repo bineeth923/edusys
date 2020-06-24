@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
 from attendance import views
 from attendance.api import views as api_views
@@ -8,6 +9,9 @@ from attendance.views import validate_login, common_login, admin_teacher_add, ad
 urlpatterns = [
 
     # ------------------ APIs ---------------------------------------
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+
     path('api/teacher/<int:id>', api_views.TeacherAPI.as_view()),
     path('api/teacher/', api_views.TeacherAPI.as_view()),
 
@@ -22,6 +26,8 @@ urlpatterns = [
 
     path('api/student/<int:id>', api_views.StudentAPI.as_view()),
     path('api/student/', api_views.StudentAPI.as_view()),
+
+    path('api/mark_attendance', api_views.AttendanceAPI.as_view()),
 
     url(r'^$', common_login, name='login'),
     url(r'^login/validate/$', validate_login, name='login_validate'),
